@@ -1,37 +1,35 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-  type Category {
+  type Wine {
     _id: ID
     name: String
+    county: String
+    color: String
+    price: String
+    pictureUrl: String
   }
 
-  type Product {
-    _id: ID
-    name: String
-    description: String
-    image: String
-    quantity: Int
-    price: Float
-    category: Category
+  type Cellar {
+   _id: ID
+    user: [User]
+    wine: [Wine]
   }
 
-  type Order {
+  type Review {
     _id: ID
-    purchaseDate: String
-    products: [Product]
+    rating: Number
+    wine: [Wine]
+    user: [User]
+    comment: String
   }
 
   type User {
     _id: ID
-    firstName: String
-    lastName: String
     email: String
-    orders: [Order]
-  }
-
-  type Checkout {
-    session: ID
+    password: String
+    cellar: [Cellar]
+    review: [Review]
   }
 
   type Auth {
@@ -40,19 +38,19 @@ const typeDefs = gql`
   }
 
   type Query {
-    categories: [Category]
-    products(category: ID, name: String): [Product]
-    product(_id: ID!): Product
+    review: Review
+    wine: Wine
     user: User
-    order(_id: ID!): Order
-    checkout(products: [ID]!): Checkout
+    cellar: Cellar
   }
 
   type Mutation {
-    addUser(firstName: String!, lastName: String!, email: String!, password: String!): Auth
-    addOrder(products: [ID]!): Order
-    updateUser(firstName: String, lastName: String, email: String, password: String): User
-    updateProduct(_id: ID!, quantity: Int!): Product
+    addUser(email: String!, password: String!): Auth
+    // TODO how to add wine specifically to cellar
+    // TODO how to add revuew specifically to wine
+    addReview(reviews: [ID]!, rating: Number!): Review
+    updateUser(email: String, password: String): User
+    deleteUser(email: String, password: String): User
     login(email: String!, password: String!): Auth
   }
 `;
