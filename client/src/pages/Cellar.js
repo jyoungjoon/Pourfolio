@@ -1,13 +1,7 @@
 import React from 'react';
 
-function Cellar(props) {
-
-  return (
-    <div>
-   
-    </div>
-  );
+function Cellar() {
+  return <div>Cellar</div>;
 }
 
 export default Cellar;
-

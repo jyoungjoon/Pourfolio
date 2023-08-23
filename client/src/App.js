@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import {
   ApolloClient,
   InMemoryCache,
@@ -15,7 +20,7 @@ import Signup from './pages/Signup';
 import Setting from './pages/Setting';
 import Search from './pages/Search';
 
-import Nav from './components/Nav';
+import AppLayout from './ui/AppLayout';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -42,32 +47,15 @@ function App() {
       <Router>
         <div>
           <StoreProvider>
-            <Nav />
             <Routes>
-              <Route 
-                path="/" 
-                element={<Home />} 
-              />
-              <Route 
-                path="/signup" 
-                element={<Signup />} 
-              />
-              <Route 
-                path="/setting" 
-                element={<Setting />} 
-              />
-              <Route 
-                path="/search" 
-                element={<Search />} 
-              />
-              <Route 
-                path="/cellar" 
-                element={<Cellar />} 
-              />
-              <Route 
-                path="*" 
-                element={<NoMatch />} 
-              />
+              <Route element={<AppLayout />}>
+                <Route index element={<Navigate replace to="/" />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/setting" element={<Setting />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/cellar" element={<Cellar />} />
+              </Route>
             </Routes>
           </StoreProvider>
         </div>
