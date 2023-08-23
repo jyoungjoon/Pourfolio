@@ -11,16 +11,16 @@ const typeDefs = gql`
   }
 
   type Cellar {
-   _id: ID
-    user: [User]
-    wine: [Wine]
+    _id: ID
+    user: User
+    wine: Wine
   }
 
   type Review {
     _id: ID
-    rating: Number
-    wine: [Wine]
-    user: [User]
+    rating: Int
+    wine: Wine
+    user: User
     comment: String
   }
 
@@ -28,8 +28,8 @@ const typeDefs = gql`
     _id: ID
     email: String
     password: String
-    cellar: [Cellar]
-    review: [Review]
+    cellar: Cellar
+    review: Review
   }
 
   type Auth {
@@ -42,16 +42,6 @@ const typeDefs = gql`
     wine: Wine
     user: User
     cellar: Cellar
-  }
-
-  type Mutation {
-    addUser(email: String!, password: String!): Auth
-    // TODO how to add wine specifically to cellar
-    // TODO how to add revuew specifically to wine
-    addReview(reviews: [ID]!, rating: Number!): Review
-    updateUser(email: String, password: String): User
-    deleteUser(email: String, password: String): User
-    login(email: String!, password: String!): Auth
   }
 `;
 

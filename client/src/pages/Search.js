@@ -1,12 +1,7 @@
 import React from 'react';
 
-function Search(props) {
-
-  return (
-    <div>
-   
-    </div>
-  );
+function Search() {
+  return <div>Search</div>;
 }
 
 export default Search;

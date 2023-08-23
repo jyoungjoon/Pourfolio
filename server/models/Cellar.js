@@ -4,10 +4,7 @@ const Wine = require('./Wine');
 
 const { Schema } = mongoose;
 
-const cellarSchema = new Schema({
-  userId: [User.schema],
-  wineId: [Wine.schema]
-});
+const cellarSchema = new Schema();
 
 const Cellar = mongoose.model('Cellar', cellarSchema);
 
