@@ -16,8 +16,8 @@ const userSchema = new Schema({
     required: true,
     minlength: 5
   },
-  cellar: [Cellar.schema],
-  review: [Review.schema]
+  cellar: [{type:Schema.Types.ObjectId, ref:"Cellar"}],
+  reviews: [{type:Schema.Types.ObjectId, ref:"Review"}]
 });
 
 // set up pre-save middleware to create password

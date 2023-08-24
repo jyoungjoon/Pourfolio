@@ -1,5 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useMutation } from "@apollo/client";
+import { ADD_USER } from "../utils/mutations";
 
 const StyledSignup = styled.div`
   position: relative;
@@ -9,7 +11,7 @@ const StyledSignup = styled.div`
 
 const Header = styled.h1`
   display: inline-block;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 14rem;
   transform: rotate(270deg);
   text-transform: lowercase;
@@ -44,7 +46,7 @@ const Input = styled.input`
   height: 8rem;
   font-size: 5rem;
   padding-left: 3rem;
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   &:focus {
     outline: 1px solid #fa9f45;
     border: 1px solid #fa9f45;
@@ -62,7 +64,7 @@ const SubmitButton = styled.button`
   align-self: center;
 
   span {
-    font-family: 'Oswald', sans-serif;
+    font-family: "Oswald", sans-serif;
     color: #00434d;
     font-size: 5rem;
     font-weight: 500;
@@ -72,38 +74,46 @@ const SubmitButton = styled.button`
 `;
 
 function Signup() {
+  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [addUser, { error, data }] = useMutation(ADD_USER);
+    console.log(userData)
   // TODO: create user in database:
-  function handleFormSubmit() {}
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    console.log(e)
+    const {data} = await addUser({variables:{...userData}})
+    console.log(data)
+  }
 
   return (
     <StyledSignup>
       <div
         style={{
-          borderBottom: '1px solid #BDAFA0',
-          borderTop: '1px solid #BDAFA0',
-          width: '100%',
-          height: '93%',
-          transform: 'translateY(4%)',
-          position: 'absolute',
+          borderBottom: "1px solid #BDAFA0",
+          borderTop: "1px solid #BDAFA0",
+          width: "100%",
+          height: "93%",
+          transform: "translateY(4%)",
+          position: "absolute",
         }}
       ></div>
       <div
         style={{
-          borderLeft: '1px solid #BDAFA0',
-          width: '92%',
-          height: '100%',
-          transform: 'translateX(2%)',
-          position: 'absolute',
+          borderLeft: "1px solid #BDAFA0",
+          width: "92%",
+          height: "100%",
+          transform: "translateX(2%)",
+          position: "absolute",
         }}
       ></div>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'start',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%',
-          transform: 'translateY(-5%)',
+          display: "flex",
+          justifyContent: "start",
+          alignItems: "center",
+          width: "100%",
+          height: "100%",
+          transform: "translateY(-5%)",
         }}
       >
         <Header>
@@ -111,20 +121,20 @@ function Signup() {
         </Header>
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '60%',
-            height: '100%',
-            transform: 'translateY(-5%)',
-            gap: '6rem',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "60%",
+            height: "100%",
+            transform: "translateY(-5%)",
+            gap: "6rem",
           }}
         >
           <StyledForm onSubmit={handleFormSubmit}>
-            <Input type="email" placeholder="email" />
-            <Input type="password" placeholder="password" />
-            <Input type="password" placeholder="confirm password" />
+            <Input type="email" placeholder="email" value = {userData.email} onChange = {e => setUserData({...userData,email:e.target.value})}/>
+            <Input type="password" placeholder="password" onChange = {e => setUserData({...userData,password:e.target.value})} />
+            <Input type="password" placeholder="confirm password" value = {userData.password} />
             <SubmitButton>
               <span>sign up</span>
             </SubmitButton>
