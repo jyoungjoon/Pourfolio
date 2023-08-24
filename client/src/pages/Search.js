@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HiOutlineSearch } from 'react-icons/hi';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_WINE } from '../utils/queries';
 
 const StyledSearch = styled.div`
   position: relative;
@@ -56,6 +58,8 @@ function Search() {
   const [searchTerm, setSearchTerm] = useState('');
 
   // TODO: use searchTerm to look for wine data
+  const {loading,data}= useQuery(GET_ALL_WINE)
+  console.log(data,loading)
 
   return (
     <StyledSearch>
@@ -94,6 +98,7 @@ function Search() {
           type="text"
           placeholder="Start your search.."
           hassearchterm={searchTerm}
+          value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <StyledSearchIcon hassearchterm={searchTerm} />
