@@ -21,6 +21,20 @@ import Setting from './pages/Setting';
 import Search from './pages/Search';
 
 import AppLayout from './ui/AppLayout';
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  *::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+`;
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -45,20 +59,18 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div>
-          <StoreProvider>
-            <Routes>
-              <Route element={<AppLayout />}>
-                <Route index element={<Navigate replace to="/" />} />
-                <Route path="/" element={<Home />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/setting" element={<Setting />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/cellar" element={<Cellar />} />
-              </Route>
-            </Routes>
-          </StoreProvider>
-        </div>
+        <GlobalStyle />
+        <StoreProvider>
+          <Routes>
+            <Route element={<AppLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/setting" element={<Setting />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/cellar" element={<Cellar />} />
+            </Route>
+          </Routes>
+        </StoreProvider>
       </Router>
     </ApolloProvider>
   );

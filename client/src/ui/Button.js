@@ -1,6 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const StyledButton = styled.a``;
+
 function Button() {
-  return <div></div>;
+  return <StyledButton></StyledButton>;
 }
 
 export default Button;
