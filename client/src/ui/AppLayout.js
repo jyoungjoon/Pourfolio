@@ -7,6 +7,7 @@ const StyledAppLayout = styled.div`
   height: 100dvh;
   width: auto;
   background-color: #00434d;
+  overflow-y: hidden;
   overflow-x: scroll;
   white-space: nowrap;
 `;
@@ -14,6 +15,8 @@ const StyledAppLayout = styled.div`
 const Main = styled.div`
   width: 100%;
   height: 90%;
+  overflow-y: hidden;
+  overflow-x: scroll;
 `;
 
 function AppLayout() {

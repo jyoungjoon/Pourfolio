@@ -1,10 +1,10 @@
-const { gql } = require("apollo-server-express");
+const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
   type Wine {
     _id: ID
     name: String
-    county: String
+    country: String
     color: String
     price: String
     pictureUrl: String
@@ -38,14 +38,15 @@ const typeDefs = gql`
   }
 
   type Query {
-    review( reviewId:ID!): Review
-    wine(wineId:ID!): Wine
-    user(userId:ID!): User
-    cellar(cellarId:ID!): Cellar
-    wines:[Wine]
+    review(reviewId: ID!): Review
+    wine(wineId: ID!): Wine
+    wines: [Wine]
+    user(userId: ID!): User
+    cellar(cellarId: ID!): Cellar
   }
   type Mutation {
-       addUser(email:String!,password:String!):Auth
+    addUser(email: String!, password: String!): Auth
+    login(email: String!, password: String!): Auth
   }
 `;
 

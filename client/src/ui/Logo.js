@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const StyledP = styled.span`
   display: inline-block;
@@ -25,13 +26,19 @@ const StyledFolio = styled.span`
   color: #fa9f45;
 `;
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
+
 function Logo() {
   return (
-    <div style={{ transform: 'translateY(1.5rem)' }}>
-      <StyledP>P</StyledP>
-      <StyledOur>our</StyledOur>
-      <StyledFolio>folio</StyledFolio>
-    </div>
+    <StyledLink to="/">
+      <div style={{ transform: 'translateY(1.5rem)' }}>
+        <StyledP>P</StyledP>
+        <StyledOur>our</StyledOur>
+        <StyledFolio>folio</StyledFolio>
+      </div>
+    </StyledLink>
   );
 }
 

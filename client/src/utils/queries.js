@@ -1,13 +1,10 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
+
 export const GET_ALL_WINE = gql`
   {
     wines {
       _id
       name
-      color
-      price
-      country
-      pictureUrl
     }
   }
 `;

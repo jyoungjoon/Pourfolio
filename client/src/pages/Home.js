@@ -5,6 +5,7 @@ const StyledHome = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 `;
 
 const BorderBoxOne = styled.div`
@@ -65,7 +66,7 @@ const HelperTextSip = styled.span`
   color: #ffffff;
   bottom: -1.5rem;
   right: 0.5rem;
-  z-index: 50;
+  z-index: 40;
 `;
 
 const HelperTextSavor = styled.span`
@@ -76,7 +77,7 @@ const HelperTextSavor = styled.span`
   color: #ffffff;
   bottom: 12.5rem;
   right: 39rem;
-  z-index: 50;
+  z-index: 40;
 `;
 
 function Home() {
