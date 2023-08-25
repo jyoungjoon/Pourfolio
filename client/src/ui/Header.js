@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import Navigation from './Navigation';
 import { styled } from 'styled-components';
+import Auth from '../utils/auth';
 
 const StyledHeader = styled.header`
   height: 15rem;
@@ -39,7 +40,11 @@ function Header() {
       </StyledWrapper>
       <Logo />
       <StyledWrapper style={{ borderLeft: '1px solid #bdafa0' }}>
-        <StyledLink to="/signup">sign up</StyledLink>
+        {Auth.loggedIn() ? (
+          <StyledLink>logged in</StyledLink>
+        ) : (
+          <StyledLink to="/signup">login / sign up</StyledLink>
+        )}
       </StyledWrapper>
     </StyledHeader>
   );

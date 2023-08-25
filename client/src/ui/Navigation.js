@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
+import Auth from '../utils/auth';
 
 const StyledNavigation = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,17 +14,21 @@ const StyledNavigation = styled.div`
   &:hover {
     transform: translateY(-0.15rem);
   }
+  overflow: hidden;
 `;
 
 const NavBackground = styled.div`
   position: absolute;
-  height: 6rem;
-  width: 6rem;
+  height: 1rem;
+  width: 1rem;
   border-radius: 50%;
   background-image: radial-gradient(#00434d, #bdafa0);
   z-index: 50;
   transition: transform 0.55s cubic-bezier(0.86, 0, 0.07, 1);
-  transform: ${({ open }) => (open ? 'scale(100)' : 'scale(0)')};
+  transform: ${({ open }) => (open ? 'scale(1000)' : 'scale(0)')};
+  /* Add transform-origin property */
+  transform-origin: center center; /* Change this based on your desired corner */
+  overflow: hidden;
 `;
 
 const NavBurger = styled.span`
@@ -145,7 +152,7 @@ const CloseButton = styled.span`
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleNav() {
+  function handleNav(e) {
     setIsOpen(!isOpen);
   }
 
@@ -183,9 +190,7 @@ function Navigation() {
             </NavLink>
           </NavItem>
           <NavItem>
-            <NavLink to={'/'} onClick={handleNav}>
-              logout
-            </NavLink>
+            <NavLink onClick={() => Auth.logout()}>logout</NavLink>
           </NavItem>
           <CloseButton onClick={handleNav}>
             <span>&#x2715;</span>

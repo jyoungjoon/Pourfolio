@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Cellar = require("./Cellar");
+const mongoose = require('mongoose');
+const Cellar = require('./Cellar');
 
 const { Schema } = mongoose;
 
@@ -21,9 +21,9 @@ const wineSchema = new Schema({
   pictureUrl: {
     type: String,
   },
-  cellar: { type: Schema.Types.ObjectId, ref: "Cellar" },
+  cellar: { type: Schema.Types.ObjectId, ref: 'Cellar' },
 });
 
-const Wine = mongoose.model("Wine", wineSchema);
+const Wine = mongoose.model('Wine', wineSchema);
 
 module.exports = Wine;

@@ -8,6 +8,7 @@ import { BsFacebook } from 'react-icons/bs';
 import { AiOutlineInstagram } from 'react-icons/ai';
 import { BsGithub } from 'react-icons/bs';
 import { CgTwitter } from 'react-icons/cg';
+
 const StyledFooter = styled.footer`
   background-color: #00434d;
   height: 100vh;

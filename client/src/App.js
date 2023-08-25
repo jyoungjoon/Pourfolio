@@ -12,6 +12,7 @@ import {
   createHttpLink,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { Toaster } from 'react-hot-toast';
 
 import { StoreProvider } from './utils/GlobalState';
 import Home from './pages/Home';
@@ -72,6 +73,27 @@ function App() {
           </Routes>
         </StoreProvider>
       </Router>
+      <Toaster
+        position="bottom-center"
+        gutter={12}
+        containerStyle={{ margin: '8px' }}
+        toastOptions={{
+          success: {
+            duration: 2000,
+          },
+          error: {
+            duration: 2500,
+          },
+          style: {
+            fontSize: '5rem',
+            maxWidth: '1000px',
+            padding: '16px 24px',
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            color: '#00434d',
+          },
+        }}
+      />
     </ApolloProvider>
   );
 }
