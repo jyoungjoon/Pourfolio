@@ -1,6 +1,29 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HiOutlineSearch } from 'react-icons/hi';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_WINE } from '../utils/queries';
+import { handleError } from '@apollo/client/link/http/parseAndCheckHttpResponse';
+
+const SaveButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 13rem;
+  height: 5rem;
+  background-color: #fa9f45;
+  border-radius: 2rem;
+  align-self: center;
+
+  span {
+    font-family: 'Oswald', sans-serif;
+    color: #00434d;
+    font-size: 3.5rem;
+    font-weight: 500;
+    text-align: center;
+    transform: translateY(-0.65rem);
+  }
+`;
 
 const StyledSearch = styled.div`
   position: relative;
@@ -54,16 +77,46 @@ const StyledSearchIcon = styled(HiOutlineSearch)`
   transition: all 0.25s ease-in-out;
 `;
 
+const StyledWineCard = styled.div`
+background-color: white;
+font-size: 2.5rem;
+font-family: 'Yellowtail', cursive;
+letter-spacing: 0;
+width: 75rem;
+height: 20rem;
+border-radius: 2rem;
+display: flex;
+justify-content: center;
+align-items: center;
+`
+const StyledWineImage = styled.div`
+height: 14rem;
+
+`
+
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
-  
-  
+  const { data } = useQuery(GET_ALL_WINE)
+
+  let wineResults;
+
+  if (data) {
+  wineResults = data.wines.map(wine => wine.name.toLowerCase())
+      .filter(wine => wine.startsWith(searchTerm.toLowerCase())).sort((a, b) => b - a)
+      .slice(0,5);
+  }
+
+
 
   return (
     <StyledSearch>
       {/* <Loader loading={loading} /> */}
       <div
         style={{
+          display: 'grid',
+          gridAutoFlow: 'column',
+          gridRow: '3',
+          gridColumn: 'auto',
           borderBottom: '1px solid #BDAFA0',
           borderTop: '1px solid #BDAFA0',
           width: '100%',
@@ -101,6 +154,7 @@ function Search() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <StyledSearchIcon hassearchterm={searchTerm} />
+        {wineResults ? wineResults.map(wine => <StyledWineCard key={wine.name}><StyledWineImage/>{wine}<SaveButton><span>save</span></SaveButton></StyledWineCard>) : ''}
       </div>
     </StyledSearch>
   );
