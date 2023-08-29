@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import Auth from '../utils/auth';
 
 const StyledSignup = styled.div`

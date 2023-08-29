@@ -5,12 +5,22 @@ import Navigation from './Navigation';
 import { styled } from 'styled-components';
 import Auth from '../utils/auth';
 
+const OuterContainer = styled.div`
+  width: 100%;
+  height: 15rem;
+`;
+
 const StyledHeader = styled.header`
+  width: 100%;
   height: 15rem;
   border-bottom: 0.01rem solid #bdafa0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
 `;
 
 const StyledWrapper = styled.div`
@@ -34,19 +44,21 @@ const StyledLink = styled(Link)`
 
 function Header() {
   return (
-    <StyledHeader>
-      <StyledWrapper style={{ borderRight: '1px solid #bdafa0' }}>
-        <Navigation />
-      </StyledWrapper>
-      <Logo />
-      <StyledWrapper style={{ borderLeft: '1px solid #bdafa0' }}>
-        {Auth.loggedIn() ? (
-          <StyledLink>logged in</StyledLink>
-        ) : (
-          <StyledLink to="/signup">login / sign up</StyledLink>
-        )}
-      </StyledWrapper>
-    </StyledHeader>
+    <OuterContainer>
+      <StyledHeader>
+        <StyledWrapper style={{ borderRight: '1px solid #bdafa0' }}>
+          <Navigation />
+        </StyledWrapper>
+        <Logo />
+        <StyledWrapper style={{ borderLeft: '1px solid #bdafa0' }}>
+          {Auth.loggedIn() ? (
+            <StyledLink>logged in</StyledLink>
+          ) : (
+            <StyledLink to="/signup">login / sign up</StyledLink>
+          )}
+        </StyledWrapper>
+      </StyledHeader>
+    </OuterContainer>
   );
 }
 

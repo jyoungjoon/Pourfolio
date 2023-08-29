@@ -1,9 +1,18 @@
+import toast from 'react-hot-toast';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { HiOutlineSearch } from 'react-icons/hi';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_WINE } from '../utils/queries';
-import { handleError } from '@apollo/client/link/http/parseAndCheckHttpResponse';
+import { SAVE_WINE } from '../utils/mutations';
+import Auth from '../utils/auth';
+
+const StyledSearch = styled.div`
+  position: relative;
+  height: 100%;
+  width: auto;
+  display: flex;
+`;
 
 const SaveButton = styled.button`
   display: flex;
@@ -14,7 +23,6 @@ const SaveButton = styled.button`
   background-color: #fa9f45;
   border-radius: 2rem;
   align-self: center;
-
   span {
     font-family: 'Oswald', sans-serif;
     color: #00434d;
@@ -25,24 +33,35 @@ const SaveButton = styled.button`
   }
 `;
 
-const StyledSearch = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow-y: hidden;
-  overflow-x: scroll;
+const SearchBar = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75rem;
+  min-width: 75rem;
 `;
 
-const SearchBar = styled.input`
+const SearchInput = styled.input`
   color: #494949;
-  border-radius: 1rem;
   display: block;
-  width: 60%;
+  width: 75rem;
   height: 8rem;
   font-size: 5rem;
   padding-left: 3rem;
   font-family: 'Oswald', sans-serif;
-  transform: ${({ hassearchterm }) => hassearchterm && 'translateY(-20rem)'};
+  border-radius: 1rem;
+  transform: ${({ hassearchterm }) => hassearchterm && 'translateY(-4rem)'};
+  transition: all 0.25s ease-in-out;
+`;
+
+const StyledSearchIcon = styled(HiOutlineSearch)`
+  position: absolute;
+  color: #494949;
+  font-size: 5rem;
+  transform: translateX(32.5rem);
+  cursor: pointer;
+  transform: ${({ hassearchterm }) =>
+    hassearchterm && 'translateY(-4rem) translateX(32.5rem)'};
   transition: all 0.25s ease-in-out;
 `;
 
@@ -67,62 +86,75 @@ const Header = styled.h1`
   }
 `;
 
-const StyledSearchIcon = styled(HiOutlineSearch)`
-  color: #494949;
-  font-size: 5rem;
-  transform: translateX(-10rem);
-  cursor: pointer;
-  transform: ${({ hassearchterm }) =>
-    hassearchterm && 'translateY(-20rem) translateX(-10rem)'};
-  transition: all 0.25s ease-in-out;
+const StyledWineCard = styled.div`
+  background-color: white;
+  font-size: 2.5rem;
+  font-family: 'Yellowtail', cursive;
+  letter-spacing: 0;
+  width: 75rem;
+  min-width: 75rem;
+  height: 20rem;
+  border-radius: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-const StyledWineCard = styled.div`
-background-color: white;
-font-size: 2.5rem;
-font-family: 'Yellowtail', cursive;
-letter-spacing: 0;
-width: 75rem;
-height: 20rem;
-border-radius: 2rem;
-display: flex;
-justify-content: center;
-align-items: center;
-`
-const StyledWineImage = styled.div`
-height: 14rem;
-
-`
+const StyledWineImage = styled.img`
+  height: 14rem;
+`;
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { data } = useQuery(GET_ALL_WINE)
+  const [saveWine] = useMutation(SAVE_WINE);
+
+  const { data } = useQuery(GET_ALL_WINE);
 
   let wineResults;
 
   if (data) {
-  wineResults = data.wines.map(wine => wine.name.toLowerCase())
-      .filter(wine => wine.startsWith(searchTerm.toLowerCase())).sort((a, b) => b - a)
-      .slice(0,5);
+    wineResults = data.wines
+      .map((wine) => ({
+        id: wine._id,
+        name: wine.name.toLowerCase(),
+        pictureUrl: wine.pictureUrl,
+        type: wine.color,
+      }))
+      .filter((wine) => wine.name.startsWith(searchTerm.toLowerCase()))
+      .sort((a, b) => b.name - a.name)
+      .slice(0, 6);
   }
 
+  // ...
 
+  async function handleSave(wineId) {
+    try {
+      if (Auth.loggedIn()) {
+        const userId = Auth.getProfile().data._id;
+        const res = await saveWine({
+          variables: { wineId: wineId, userId: userId },
+        });
+
+        const message = res.data.saveWine;
+        toast.success(message);
+      }
+    } catch (error) {
+      console.error(error.message);
+      toast.error('An error occurred while saving the wine.');
+    }
+  }
 
   return (
     <StyledSearch>
       {/* <Loader loading={loading} /> */}
       <div
         style={{
-          display: 'grid',
-          gridAutoFlow: 'column',
-          gridRow: '3',
-          gridColumn: 'auto',
           borderBottom: '1px solid #BDAFA0',
           borderTop: '1px solid #BDAFA0',
           width: '100%',
-          height: '93%',
+          height: '79.5%',
           transform: 'translateY(4%)',
-          position: 'absolute',
+          position: 'fixed',
         }}
       ></div>
       <div
@@ -143,18 +175,45 @@ function Search() {
           transform: 'translateY(-5%)',
         }}
       >
-        <Header>
-          S<span>e</span>arch
-        </Header>
-        <SearchBar
-          type="text"
-          placeholder="Start your search.."
-          value={searchTerm}
-          hassearchterm={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <StyledSearchIcon hassearchterm={searchTerm} />
-        {wineResults ? wineResults.map(wine => <StyledWineCard key={wine.name}><StyledWineImage/>{wine}<SaveButton><span>save</span></SaveButton></StyledWineCard>) : ''}
+        <div style={{ minWidth: '38.5rem' }}>
+          <Header>
+            S<span>e</span>arch
+          </Header>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <SearchBar>
+            <SearchInput
+              type="text"
+              placeholder="Start your search.."
+              value={searchTerm}
+              hassearchterm={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <StyledSearchIcon hassearchterm={searchTerm} />
+          </SearchBar>
+          <div
+            style={{
+              display: 'grid',
+              gridAutoFlow: 'column',
+              gridTemplateRows: '1fr 1fr',
+              gridTemplateColumns: '1fr',
+              gap: '5rem',
+            }}
+          >
+            {searchTerm !== '' && wineResults
+              ? wineResults.map((wine) => (
+                  <StyledWineCard key={wine.name}>
+                    <StyledWineImage src={wine.pictureUrl} />
+                    {wine.name}
+                    {wine.type}
+                    <SaveButton onClick={() => handleSave(wine.id)}>
+                      <span>save</span>
+                    </SaveButton>
+                  </StyledWineCard>
+                ))
+              : ''}
+          </div>
+        </div>
       </div>
     </StyledSearch>
   );
