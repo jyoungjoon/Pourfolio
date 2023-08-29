@@ -42,11 +42,12 @@ const typeDefs = gql`
     wine(wineId: ID!): Wine
     wines: [Wine]
     user(userId: ID!): User
-    cellar(cellarId: ID!): Cellar
+    cellar(userId: ID!): Cellar
   }
   type Mutation {
     addUser(email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
+    saveWine(wineId: ID!, userId: ID!): String
   }
 `;
 

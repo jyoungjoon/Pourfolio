@@ -22,3 +22,9 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const SAVE_WINE = gql`
+  mutation saveWine($wineId: ID!, $userId: ID!) {
+    saveWine(wineId: $wineId, userId: $userId)
+  }
+`;

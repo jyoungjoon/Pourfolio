@@ -2,26 +2,26 @@ import React from 'react';
 import Header from './Header';
 import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { useHorizontalScroll } from '../utils/helpers';
 
 const StyledAppLayout = styled.div`
   height: 100dvh;
-  width: auto;
+  width: 100dvw;
   background-color: #00434d;
-  overflow-y: hidden;
-  overflow-x: scroll;
-  white-space: nowrap;
 `;
 
 const Main = styled.div`
   width: 100%;
-  height: 90%;
-  overflow-y: hidden;
-  overflow-x: scroll;
+  height: 87.5%;
 `;
 
 function AppLayout() {
+  const scrollRef = useHorizontalScroll();
   return (
-    <StyledAppLayout>
+    <StyledAppLayout
+      ref={scrollRef}
+      style={{ overflowX: 'auto', overflowY: 'hidden' }}
+    >
       <Header />
       <Main>
         <Outlet />

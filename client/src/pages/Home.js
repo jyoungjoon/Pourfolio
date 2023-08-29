@@ -81,6 +81,8 @@ const HelperTextSavor = styled.span`
 `;
 
 function Home() {
+  const randomVideoNumber = Math.floor(Math.random() * 4 + 1);
+
   return (
     <StyledHome>
       <BorderBoxOne>
@@ -91,8 +93,14 @@ function Home() {
       <BorderBoxTwo />
       <VideoPlayer>
         <Content autoPlay muted loop>
-          <source src="images/video4.mp4" type="video/mp4" />
-          <source src="images/video44.webm" type="video/webm"></source>
+          <source
+            src={`images/video${randomVideoNumber}.mp4`}
+            type="video/mp4"
+          />
+          <source
+            src={`images/video${randomVideoNumber}.webm`}
+            type="video/webm"
+          ></source>
           Sorry, your browser is not supported to play videos.
         </Content>
       </VideoPlayer>

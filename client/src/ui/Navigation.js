@@ -26,8 +26,7 @@ const NavBackground = styled.div`
   z-index: 50;
   transition: transform 0.55s cubic-bezier(0.86, 0, 0.07, 1);
   transform: ${({ open }) => (open ? 'scale(1000)' : 'scale(0)')};
-  /* Add transform-origin property */
-  transform-origin: center center; /* Change this based on your desired corner */
+  transform-origin: center center; 
   overflow: hidden;
 `;
 

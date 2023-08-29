@@ -13,26 +13,33 @@ export const GET_ALL_WINE = gql`
   }
 `;
 
-export const ADD_USER = gql`
-  mutation addUser($email: String!, $password: String!) {
-    addUser(email: $email, password: $password) {
-      token
-      user {
-        _id
-        email
-      }
+export const GET_WINE = gql`
+  {
+    wines {
+      name
+      country
+      color
+      price
+      pictureUrl
     }
   }
 `;
 
-export const GET_WINE = gql`
-{
-  wines {
-    name
-    country
-    color
-    price
-    pictureUrl
+export const GET_CELLAR_BY_USER_ID = gql`
+  query GetCellarByUserId($userId: ID!) {
+    cellar(userId: $userId) {
+      _id
+      user {
+        _id
+      }
+      wines {
+        _id
+        name
+        price
+        country
+        color
+        pictureUrl
+      }
+    }
   }
-}
-`
+`;

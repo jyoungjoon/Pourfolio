@@ -13,6 +13,12 @@ const resolvers = {
     user: async (parent, { userId }) => {
       return await User.findOne({ _id: userId });
     },
+    cellar: async (parent, { userId }) => {
+      return await Cellar.findOne({ user: userId }).populate({
+        path: 'wines',
+        model: 'Wine', // Assuming your wine model name is 'Wine'
+      });
+    },
   },
 
   Mutation: {
@@ -21,6 +27,7 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
@@ -37,6 +44,55 @@ const resolvers = {
       const token = signToken(user);
 
       return { token, user };
+    },
+
+    saveWine: async (parent, { wineId, userId }, context) => {
+      try {
+        const wine = await Wine.findById(wineId);
+        const user = await User.findById(userId).populate({
+          path: 'cellar',
+          populate: {
+            path: 'wines',
+            model: 'Wine',
+          },
+        });
+
+        console.log(user);
+
+        if (!wine) {
+          return 'There was an error with our database. Please try again.';
+        }
+
+        if (!user) {
+          return 'You must login first.';
+        }
+
+        if (!user.cellar || user.cellar.length === 0) {
+          user.cellar = await Cellar.create({ user: user._id, wines: [] });
+          await user.save();
+        }
+
+        const cellar = user.cellar;
+
+        if (!cellar.wines) {
+          cellar.wines = [];
+        }
+
+        const wineInCellarIndex = cellar.wines.findIndex((w) =>
+          w.equals(wineId)
+        );
+
+        if (wineInCellarIndex !== -1) {
+          return 'Wine already exists in the cellar.';
+        }
+
+        cellar.wines.push(wine);
+        await cellar.save();
+
+        return 'Wine saved successfully.';
+      } catch (error) {
+        throw error;
+      }
     },
   },
 };
