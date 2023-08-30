@@ -107,6 +107,7 @@ const StyledWineImage = styled.img`
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
   const [saveWine] = useMutation(SAVE_WINE);
+  const [userRating, setUserRating] = useState(null);
 
   const { data } = useQuery(GET_ALL_WINE);
 
@@ -206,9 +207,13 @@ function Search() {
                     <StyledWineImage src={wine.pictureUrl} />
                     {wine.name}
                     {wine.type}
-                    <SaveButton onClick={() => handleSave(wine.id)}>
-                      <span>save</span>
-                    </SaveButton>
+                    {Auth.loggedIn() ? (
+                      <SaveButton onClick={() => handleSave(wine.id)}>
+                        <span>save</span>
+                      </SaveButton>
+                    ) : (
+                      ''
+                    )}
                   </StyledWineCard>
                 ))
               : ''}

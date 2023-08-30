@@ -18,9 +18,9 @@ const typeDefs = gql`
 
   type Review {
     _id: ID
-    rating: Int
     wine: Wine
     user: User
+    rating: Int
     experience: String
   }
 
@@ -38,16 +38,24 @@ const typeDefs = gql`
   }
 
   type Query {
-    review(reviewId: ID!): Review
+    review(wine: ID!): Review
+    reviews(userId: ID!): [Review]
     wine(wineId: ID!): Wine
     wines: [Wine]
     user(userId: ID!): User
     cellar(userId: ID!): Cellar
   }
+
   type Mutation {
-    addUser(email: String!, password: String!): Auth
+    addUser(email: String!, password: String!, confirmPassword: String!): Auth
     login(email: String!, password: String!): Auth
     saveWine(wineId: ID!, userId: ID!): String
+    saveReview(
+      wineId: ID!
+      userId: ID!
+      rating: Int
+      experience: String
+    ): String
   }
 `;
 

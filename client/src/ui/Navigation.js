@@ -26,7 +26,7 @@ const NavBackground = styled.div`
   z-index: 50;
   transition: transform 0.55s cubic-bezier(0.86, 0, 0.07, 1);
   transform: ${({ open }) => (open ? 'scale(1000)' : 'scale(0)')};
-  transform-origin: center center; 
+  transform-origin: center center;
   overflow: hidden;
 `;
 
@@ -178,19 +178,25 @@ function Navigation() {
               s<span>e</span>arch
             </NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink to={'/cellar'} onClick={handleNav}>
-              <span>m</span>y c<span>e</span>llar
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink to={'/setting'} onClick={handleNav}>
-              s<span>e</span>tt<span>in</span>gs
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink onClick={() => Auth.logout()}>logout</NavLink>
-          </NavItem>
+          {Auth.loggedIn() ? (
+            <>
+              <NavItem>
+                <NavLink to={'/cellar'} onClick={handleNav}>
+                  <span>m</span>y c<span>e</span>llar
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink to={'/setting'} onClick={handleNav}>
+                  s<span>e</span>tt<span>in</span>gs
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink onClick={() => Auth.logout()}>logout</NavLink>
+              </NavItem>
+            </>
+          ) : (
+            ''
+          )}{' '}
           <CloseButton onClick={handleNav}>
             <span>&#x2715;</span>
           </CloseButton>

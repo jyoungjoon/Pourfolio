@@ -4,9 +4,12 @@
   "private": true,
   "proxy": "http://localhost:3001/",
   "dependencies": {
+    "@tanstack/react-query": "^4.32.1",
+    "@tanstack/react-query-devtools": "^4.32.1",
     "@apollo/client": "^3.5.8",
     "graphql": "^14.6.0",
     "jwt-decode": "^2.2.0",
+    "rc-checkbox": "^3.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-toast": "^2.4.1",

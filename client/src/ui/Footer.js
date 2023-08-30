@@ -10,12 +10,12 @@ import { BsGithub } from 'react-icons/bs';
 import { CgTwitter } from 'react-icons/cg';
 
 const StyledFooter = styled.footer`
-  background-color: #00434d;
-  height: 100vh;
-  width: 100vw;
+  position: relative;
+  height: 100%;
   display: flex;
   justify-content: space-between;
 `;
+
 const StyledLeftPanel = styled.div`
   width: 50%;
   height: 100%;
@@ -23,16 +23,20 @@ const StyledLeftPanel = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
 `;
+
 const StyledRightPanel = styled.div`
   width: 50%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 `;
+
 const StyledEmpty = styled.div`
   border-right: 0.01rem solid #bdafa0;
   flex: 1 1 auto;
 `;
+
 const StyledLinks = styled.div`
   display: flex;
   text-align: end;
@@ -41,6 +45,7 @@ const StyledLinks = styled.div`
   color: white;
   flex: 1 1 auto;
 `;
+
 const StyledTeam = styled.div`
   display: flex;
   width: 100%;
@@ -52,11 +57,13 @@ const StyledTeam = styled.div`
   border-top: 0.01rem solid #bdafa0;
   flex: 1 1 auto;
 `;
+
 const StyledIcons = styled.div`
   display: flex;
   width: 25%;
   justify-content: space-evenly;
 `;
+
 const StyledLogo = styled.div`
   border-top: 0.01rem solid #bdafa0;
   border-bottom: 0.01rem solid #bdafa0;
@@ -64,13 +71,14 @@ const StyledLogo = styled.div`
   height: 30%;
   flex: 1 1 auto;
 `;
+
 function Footer() {
   return (
     <StyledFooter>
       <StyledLeftPanel>
         <StyledEmpty />
         <StyledLogo>
-          <Logo />
+          <Logo style={{ display: 'block' }} />
         </StyledLogo>
         <StyledEmpty />
       </StyledLeftPanel>

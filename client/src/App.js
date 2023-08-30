@@ -20,6 +20,7 @@ import Cellar from './pages/Cellar';
 import Signup from './pages/Signup';
 import Setting from './pages/Setting';
 import Search from './pages/Search';
+import About from './pages/About';
 
 import AppLayout from './ui/AppLayout';
 import { createGlobalStyle } from 'styled-components';
@@ -66,9 +67,10 @@ function App() {
             <Route element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/setting" element={<Setting />} />
               <Route path="/search" element={<Search />} />
               <Route path="/cellar" element={<Cellar />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/setting" element={<Setting />} />
             </Route>
           </Routes>
         </StoreProvider>

@@ -82,12 +82,15 @@ function Setting() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            alignItems: 'center',
+            alignItems: 'start',
             height: '100%',
             transform: 'translateY(-5%)',
             gap: '6rem',
           }}
         >
+          <StyledLink style={{ float: 'left' }} to={'/about'}>
+            about
+          </StyledLink>
           <StyledLink to={'/signup'}>update acct.</StyledLink>
           <StyledLink to={'/'}>delete acct.</StyledLink>
         </div>
