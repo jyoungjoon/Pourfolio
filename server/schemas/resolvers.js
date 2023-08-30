@@ -16,19 +16,47 @@ const resolvers = {
     cellar: async (parent, { userId }) => {
       return await Cellar.findOne({ user: userId }).populate({
         path: 'wines',
-        model: 'Wine', // Assuming your wine model name is 'Wine'
+        model: 'Wine',
       });
+    },
+    review: async (parent, { wineId }) => {
+      return await Review.findOne({ wine: wineId });
+    },
+    reviews: async (parent, { userId }) => {
+      return await Review.find({ user: userId });
     },
   },
 
   Mutation: {
-    addUser: async (parent, { email, password }) => {
-      const user = await User.create({ email, password });
-      const token = signToken(user);
-      return { token, user };
+    addUser: async (parent, { email, password, confirmPassword }) => {
+      console.log(password, confirmPassword);
+      if (password.length < 8) {
+        throw new Error('Password must be at least 8 characters long.');
+      }
+
+      if (password !== confirmPassword) {
+        throw new Error('Passwords must match. Please try again.');
+      }
+
+      try {
+        const user = await User.create({ email, password });
+        const cellar = await Cellar.create({ user: user._id, wines: [] });
+        user.cellar = cellar._id;
+        await user.save();
+        const token = signToken(user);
+        return { token, user };
+      } catch (error) {
+        if (error.code === 11000 && error.keyPattern.email) {
+          throw new Error(
+            'That email address is already in use. Please use a different email.'
+          );
+        } else {
+          throw new Error('An error occurred while creating the user.');
+        }
+      }
     },
 
-    login: async (parent, { email, password }) => {
+    login: async (parent, { email, password, confirmPassword }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -57,8 +85,6 @@ const resolvers = {
           },
         });
 
-        console.log(user);
-
         if (!wine) {
           return 'There was an error with our database. Please try again.';
         }
@@ -67,7 +93,7 @@ const resolvers = {
           return 'You must login first.';
         }
 
-        if (!user.cellar || user.cellar.length === 0) {
+        if (!user.cellar) {
           user.cellar = await Cellar.create({ user: user._id, wines: [] });
           await user.save();
         }
@@ -93,6 +119,48 @@ const resolvers = {
       } catch (error) {
         throw error;
       }
+    },
+
+    saveReview: async (parent, { wineId, userId, rating, experience }) => {
+      console.log(wineId);
+      try {
+        const user = await User.findById(userId).populate('reviews');
+
+        const existingReview = user.reviews.find(
+          (review) => review.wine.toString() === wineId
+        );
+
+        if (existingReview) {
+          existingReview.rating = rating;
+          existingReview.experience = experience;
+          try {
+            await existingReview.save();
+            console.log('Review updated successfully.');
+          } catch (error) {
+            console.error('Error updating the review. Try again.');
+          }
+        } else {
+          const wineReview = await Review.create({
+            user: userId,
+            wine: wineId,
+            rating: rating,
+            experience: experience,
+          });
+
+          await wineReview.save();
+
+          if (!user.reviews) {
+            user.reviews = [];
+          }
+
+          user.reviews.push(wineReview);
+
+          await user.save();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return 'Review created!';
     },
   },
 };

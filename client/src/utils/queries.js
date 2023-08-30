@@ -43,3 +43,23 @@ export const GET_CELLAR_BY_USER_ID = gql`
     }
   }
 `;
+
+export const GET_USER_REVIEWS = gql`
+  query GetUserReviews($userId: ID!) {
+    reviews(userId: $userId) {
+        wine {
+          _id
+          name
+          country
+          color
+          price
+          pictureUrl
+        }
+        user {
+          _id
+        }
+        rating
+        experience
+      }
+    }
+`;

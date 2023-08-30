@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useMutation, useQuery } from '@apollo/client';
-import { GET_CELLAR_BY_USER_ID } from '../utils/queries';
+import { GET_CELLAR_BY_USER_ID, GET_USER_REVIEWS } from '../utils/queries';
 import Auth from '../utils/auth';
+import StarRating from '../ui/StarRating';
+import { SAVE_REVIEW } from '../utils/mutations';
 
 const StyledCellar = styled.div`
   position: relative;
@@ -57,17 +59,65 @@ const StyledWineCard = styled.div`
   align-items: center;
 `;
 
-function Cellar() {
-  const [myWines, setMyWines] = useState([]);
-  const userId = Auth.loggedIn() ? Auth.getProfile().data._id : null;
+const StyledWineImage = styled.img`
+  height: 14rem;
+`;
 
-  const { loading, error, data } = useQuery(GET_CELLAR_BY_USER_ID, {
+const ReviewInput = styled.textarea`
+  width: 20rem;
+  height: 10rem;
+`;
+
+function Cellar() {
+  const userId = Auth.loggedIn() ? Auth.getProfile().data._id : null;
+  const [myWines, setMyWines] = useState([]);
+  const [myReviews, setMyReviews] = useState([]);
+  const [reviewText, setReviewText] = useState({});
+
+  const [saveReview] = useMutation(SAVE_REVIEW);
+
+  const { loading, error, data, refetch } = useQuery(GET_CELLAR_BY_USER_ID, {
     variables: { userId },
   });
 
-  if (!loading && data?.cellar?.wines?.length !== myWines.length) {
-    const winesInCellar = data.cellar.wines.map((wine) => wine);
-    setMyWines(winesInCellar);
+  const {
+    loading: reviewsLoading,
+    error: reviewsError,
+    data: userReviews,
+    refetch: reviewsRefetch,
+  } = useQuery(GET_USER_REVIEWS, {
+    variables: { userId },
+  });
+
+  refetch();
+
+  useEffect(() => {
+    if (!loading && data?.cellar?.wines?.length !== myWines.length) {
+      const winesInCellar = data.cellar.wines.map((wine) => wine);
+      setMyWines(winesInCellar);
+    }
+  }, [loading, data]);
+
+  useEffect(() => {
+    if (!reviewsLoading && userReviews) {
+      const reviewsForWines = userReviews.reviews.slice();
+      setMyReviews(reviewsForWines);
+    }
+  }, [reviewsLoading, userReviews]);
+
+  async function handleSaveReview(wineId, userId, rating) {
+    const wineReviewText = reviewText[wineId];
+    const res = await saveReview({
+      variables: {
+        wineId: wineId,
+        userId: userId,
+        rating: rating,
+        experience: wineReviewText,
+      },
+    });
+    await reviewsRefetch();
+    const reviewsForWines = userReviews.reviews.slice();
+    setMyReviews(reviewsForWines);
   }
 
   return (
@@ -124,7 +174,45 @@ function Cellar() {
             <ProfileCard></ProfileCard>
             {myWines &&
               myWines.map((wine) => (
-                <StyledWineCard key={wine._id}>{wine.name}</StyledWineCard>
+                <StyledWineCard key={wine._id}>
+                  <StyledWineImage src={wine.pictureUrl} />
+                  {wine.name}
+                  {reviewText[wine._id] ? (
+                    <ReviewInput
+                      value={reviewText[wine._id] || ''}
+                      onChange={(e) => {
+                        const newText = e.target.value;
+                        setReviewText((prevTexts) => ({
+                          ...prevTexts,
+                          [wine._id]: newText,
+                        }));
+                      }}
+                    />
+                  ) : (
+                    <ReviewInput
+                      placeholder={
+                        myReviews
+                          ?.filter(
+                            (review) =>
+                              wine._id.toString() === review.wine._id.toString()
+                          )
+                          ?.at(0)?.experience
+                      }
+                      value={reviewText[wine._id] || ''}
+                      onChange={(e) => {
+                        const newText = e.target.value;
+                        setReviewText((prevTexts) => ({
+                          ...prevTexts,
+                          [wine._id]: newText,
+                        }));
+                      }}
+                    />
+                  )}
+                  <StarRating />
+                  <button onClick={() => handleSaveReview(wine._id, userId, 5)}>
+                    Submit
+                  </button>
+                </StyledWineCard>
               ))}
           </div>
         </div>

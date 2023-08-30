@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../utils/mutations';
+import { ADD_USER, LOGIN } from '../utils/mutations';
 import { toast } from 'react-hot-toast';
 import Auth from '../utils/auth';
 
@@ -28,7 +28,6 @@ const Header = styled.h1`
   }
   span {
     font-size: 14rem;
-    transform: scale(-1, -1) translateY(-4.75rem);
     display: inline-block;
     color: #ffffff;
   }
@@ -77,20 +76,76 @@ const SubmitButton = styled.button`
   }
 `;
 
-function Signup() {
-  const [userData, setUserData] = useState({ email: '', password: '' });
-  const [addUser] = useMutation(ADD_USER);
+const CheckboxContainer = styled.label`
+  display: flex;
+  align-items: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 3rem;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+`;
 
-  async function handleFormSubmit(e) {
+const Checkbox = styled.input`
+  appearance: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid #fa9f45;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  &:checked {
+    background-color: #fa9f45;
+    border: 2px solid #fa9f45;
+    &::after {
+      content: '\u2714'; /* Unicode character for checkmark */
+      display: block;
+      text-align: center;
+      font-size: 2rem;
+      color: #00434d;
+    }
+  }
+`;
+
+function Signup() {
+  const [userData, setUserData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  console.log(userData);
+
+  const [isLogin, setIsLogin] = useState(false);
+  const [addUser] = useMutation(ADD_USER);
+  const [login] = useMutation(LOGIN);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    try {
+      const { data, error } = await login({ variables: { ...userData } });
+      if (!data.login.token) {
+        toast('No account or wrong credentials. Please try again.');
+      } else {
+        toast(`Great to see you again! You're all set to dive in.`);
+      }
+      Auth.login(data.login.token);
+    } catch (error) {
+      console.log(error);
+      toast('Error', error);
+    }
+  }
+
+  async function handleSignUp(e) {
+    console.log(typeof userData.password, typeof userData.confirmPassword);
     e.preventDefault();
     try {
       const { data, error } = await addUser({ variables: { ...userData } });
       if (!data.addUser.user) {
-        toast('There was an error adding user.');
+        toast('There was an error creating your account.');
       } else {
-        toast(
-          'User added and logged in successfully. Redirecting to the homepage..'
-        );
+        toast('Welcome to your digital cellar! Your account has been created.');
         Auth.login(data.addUser.token);
       }
     } catch (error) {
@@ -130,9 +185,16 @@ function Signup() {
           transform: 'translateY(-5%)',
         }}
       >
-        <Header>
-          s<span>i</span>gn up
-        </Header>
+        {isLogin ? (
+          <Header>
+            log<span>in</span>
+          </Header>
+        ) : (
+          <Header>
+            s<span>i</span>g<span>n</span> up
+          </Header>
+        )}
+
         <div
           style={{
             display: 'flex',
@@ -145,7 +207,7 @@ function Signup() {
             gap: '6rem',
           }}
         >
-          <StyledForm onSubmit={handleFormSubmit}>
+          <StyledForm onSubmit={isLogin ? handleLogin : handleSignUp}>
             <Input
               type="email"
               placeholder="email"
@@ -157,14 +219,43 @@ function Signup() {
             <Input
               type="password"
               placeholder="password"
+              value={userData.password}
+              name="password"
               onChange={(e) =>
                 setUserData({ ...userData, password: e.target.value })
               }
             />
-            <Input type="password" placeholder="confirm password" />
-            <SubmitButton>
-              <span>sign up</span>
-            </SubmitButton>
+            {isLogin ? (
+              ''
+            ) : (
+              <Input
+                type="password"
+                placeholder="confirm password"
+                value={userData.confirmPassword}
+                name="confirmPassword"
+                onChange={(e) =>
+                  setUserData({ ...userData, confirmPassword: e.target.value })
+                }
+              />
+            )}
+            {isLogin ? (
+              <SubmitButton>
+                <span>login</span>
+              </SubmitButton>
+            ) : (
+              <SubmitButton>
+                <span>sign up</span>
+              </SubmitButton>
+            )}
+            <CheckboxContainer htmlFor="isLogin">
+              <Checkbox
+                type={'checkbox'}
+                value={isLogin}
+                onChange={() => setIsLogin(!isLogin)}
+                id="isLogin"
+              />
+              Already have an account? Check ✓ to login!
+            </CheckboxContainer>
           </StyledForm>
         </div>
       </div>
