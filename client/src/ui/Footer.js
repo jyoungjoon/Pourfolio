@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Logo from './Logo';
+
 import { FiCamera } from 'react-icons/fi';
 import { RiGovernmentLine } from 'react-icons/ri';
 import { PiWineFill } from 'react-icons/pi';
@@ -13,7 +13,7 @@ const StyledFooter = styled.footer`
   position: relative;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 `;
 
 const StyledLeftPanel = styled.div`
@@ -29,7 +29,7 @@ const StyledRightPanel = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
 `;
 
 const StyledEmpty = styled.div`
@@ -38,6 +38,7 @@ const StyledEmpty = styled.div`
 `;
 
 const StyledLinks = styled.div`
+  height: 50%;
   display: flex;
   text-align: end;
   justify-content: space-evenly;
@@ -49,6 +50,7 @@ const StyledLinks = styled.div`
 const StyledTeam = styled.div`
   display: flex;
   width: 100%;
+  height: 50%;
   text-align: center;
   flex-direction: column;
   justify-content: space-evenly;
@@ -59,9 +61,11 @@ const StyledTeam = styled.div`
 `;
 
 const StyledIcons = styled.div`
+  transform: translateX(1rem);
   display: flex;
   width: 25%;
   justify-content: space-evenly;
+  font-size: 3.25rem;
 `;
 
 const StyledLogo = styled.div`
@@ -72,45 +76,179 @@ const StyledLogo = styled.div`
   flex: 1 1 auto;
 `;
 
+const StyledP = styled.span`
+  display: inline-block;
+  font-family: 'Princess Sofia', cursive;
+  font-size: 27.5rem;
+  color: #fa9f45;
+  transform: rotate(17.5deg) translate(9rem, -8rem);
+`;
+
+const StyledOur = styled.span`
+  letter-spacing: 0.025rem;
+  transform: translateY(30rem);
+  font-family: 'Yellowtail', cursive;
+  font-size: 20.16rem;
+  color: #fa9f45;
+`;
+
+const StyledFolio = styled.span`
+  font-family: 'Yellowtail', cursive;
+  font-size: 20.16rem;
+  letter-spacing: 0.025rem;
+  transform: translateY(31rem);
+  color: #fa9f45;
+`;
+
+const WebLink = styled.a`
+  text-decoration: none;
+  color: white;
+  &:link {
+    text-decoration: none;
+    color: white;
+  }
+  &:visited {
+    text-decoration: none;
+    color: white;
+  }
+  &:active {
+    text-decoration: none;
+    color: white;
+  }
+`;
+
 function Footer() {
   return (
     <StyledFooter>
       <StyledLeftPanel>
         <StyledEmpty />
         <StyledLogo>
-          <Logo style={{ display: 'block' }} />
+          <div style={{ transform: 'translateY(6rem) translateX(4rem)' }}>
+            <StyledP>P</StyledP>
+            <StyledOur>our</StyledOur>
+            <StyledFolio>folio</StyledFolio>
+          </div>
         </StyledLogo>
         <StyledEmpty />
       </StyledLeftPanel>
       <StyledRightPanel>
         <StyledLinks>
           <ul>
-            <li>
-              https://catalog.data.gov/dataset&nbsp;&nbsp;
-              <RiGovernmentLine />
+            <li
+              style={{
+                fontSize: '2rem',
+                listStyle: 'none',
+                paddingBottom: '2rem',
+              }}
+            >
+              <WebLink
+                style={{
+                  fontSize: '2rem',
+                }}
+                href="https://catalog.data.gov/dataset"
+                target="none"
+              >
+                https://catalog.data.gov/dataset&nbsp;&nbsp;
+                <RiGovernmentLine
+                  style={{ fontSize: '3rem', transform: 'translateY(.5rem)' }}
+                />
+              </WebLink>
             </li>
-            <li>
-              https://www.liv-ex.com/&nbsp;&nbsp;
-              <PiWineFill />
+            <li
+              style={{
+                fontSize: '2rem',
+                listStyle: 'none',
+                paddingBottom: '2rem',
+              }}
+            >
+              <WebLink
+                style={{
+                  fontSize: '2rem',
+                }}
+                href="https://www.liv-ex.com"
+                target="none"
+              >
+                https://www.liv-ex.com/&nbsp;&nbsp;
+                <PiWineFill
+                  style={{ fontSize: '3rem', transform: 'translateY(.5rem)' }}
+                />
+              </WebLink>
             </li>
-            <li>
-              https://www.pexels.com/@cottonbro/&nbsp;&nbsp;
-              <FiCamera />
+            <li
+              style={{
+                fontSize: '2rem',
+                listStyle: 'none',
+                paddingBottom: '2rem',
+              }}
+            >
+              <WebLink
+                style={{
+                  fontSize: '2rem',
+                }}
+                href="https://www.pexels.com/@cottonbro/"
+                target="none"
+              >
+                https://www.pexels.com/@cottonbro/&nbsp;&nbsp;
+                <FiCamera
+                  style={{ fontSize: '3rem', transform: 'translateY(.5rem)' }}
+                />
+              </WebLink>
             </li>
-            <li>
-              https://www.instagram.com/ptankilevitch/?hl=en&nbsp;&nbsp;
-              <FiCamera />
+            <li
+              style={{
+                fontSize: '2rem',
+                listStyle: 'none',
+                paddingBottom: '2rem',
+              }}
+            >
+              <WebLink
+                style={{
+                  fontSize: '2rem',
+                }}
+                href="https://www.instagram.com/ptankilevitch/?hl=en"
+                target="none"
+              >
+                https://www.instagram.com/ptankilevitch/?hl=en&nbsp;&nbsp;
+                <FiCamera
+                  style={{ fontSize: '3rem', transform: 'translateY(.5rem)' }}
+                />
+              </WebLink>
             </li>
-            <li>
-              https://www.pexels.com/@karolina-grabowska/&nbsp;&nbsp;
-              <FiCamera />
+            <li style={{ fontSize: '2rem', listStyle: 'none' }}>
+              <WebLink
+                style={{
+                  fontSize: '2rem',
+                }}
+                href="https://www.pexels.com/@karolina-grabowska/"
+                target="none"
+              >
+                https://www.pexels.com/@karolina-grabowska/&nbsp;&nbsp;
+                <FiCamera
+                  style={{ fontSize: '3rem', transform: 'translateY(.5rem)' }}
+                />
+              </WebLink>
             </li>
           </ul>
         </StyledLinks>
         <StyledTeam>
           <ul>
-            <li>team leafy locators</li>
-            <li>© 2023 all rights reserved</li>
+            <li
+              style={{
+                fontSize: '3.5rem',
+                listStyle: 'none',
+                paddingBottom: '2rem',
+              }}
+            >
+              team leafy locators
+            </li>
+            <li
+              style={{
+                fontSize: '1.5rem',
+                listStyle: 'none',
+              }}
+            >
+              © 2023 all rights reserved
+            </li>
           </ul>
           <StyledIcons>
             <BsFacebook />

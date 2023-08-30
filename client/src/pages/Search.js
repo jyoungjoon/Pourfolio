@@ -88,7 +88,6 @@ const Header = styled.h1`
 
 const StyledWineCard = styled.div`
   background-color: white;
-  font-size: 2.5rem;
   font-family: 'Yellowtail', cursive;
   letter-spacing: 0;
   width: 75rem;
@@ -96,18 +95,27 @@ const StyledWineCard = styled.div`
   height: 20rem;
   border-radius: 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 `;
 
 const StyledWineImage = styled.img`
   height: 14rem;
+  text-align: center;
+`;
+
+const WineNameBox = styled.div`
+  font-size: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  min-width: 35rem;
 `;
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
   const [saveWine] = useMutation(SAVE_WINE);
-  const [userRating, setUserRating] = useState(null);
 
   const { data } = useQuery(GET_ALL_WINE);
 
@@ -119,7 +127,8 @@ function Search() {
         id: wine._id,
         name: wine.name.toLowerCase(),
         pictureUrl: wine.pictureUrl,
-        type: wine.color,
+        color: wine.color,
+        country: wine.country,
       }))
       .filter((wine) => wine.name.startsWith(searchTerm.toLowerCase()))
       .sort((a, b) => b.name - a.name)
@@ -205,11 +214,23 @@ function Search() {
               ? wineResults.map((wine) => (
                   <StyledWineCard key={wine.name}>
                     <StyledWineImage src={wine.pictureUrl} />
-                    {wine.name}
-                    {wine.type}
+                    <WineNameBox>
+                      <div style={{ marginBottom: '1rem' }}>{`${
+                        wine.name
+                          .slice(0, 30)
+                          .split(' ')
+                          .map(
+                            (word) =>
+                              word.charAt(0).toUpperCase() + word.slice(1)
+                          )
+                          .join(' ') + '...'
+                      } `}</div>
+                      <div>{wine.color.toLowerCase()}</div>
+                      <div>{`origin: ${wine.country.toLowerCase()}`}</div>
+                    </WineNameBox>
                     {Auth.loggedIn() ? (
                       <SaveButton onClick={() => handleSave(wine.id)}>
-                        <span>save</span>
+                        <span style={{ fontSize: '4rem' }}>save</span>
                       </SaveButton>
                     ) : (
                       ''

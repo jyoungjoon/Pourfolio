@@ -23,11 +23,11 @@ StarRating.propTypes = {
 
 export default function StarRating({
   maxRating = 5,
-  color = '#fcc419',
-  size = 24,
+  color = '#00434d',
+  size = 30,
   messages = [],
   className = '',
-  defaultRating = 0,
+  defaultRating,
   onSetRating,
 }) {
   const [rating, setRating] = useState(defaultRating);

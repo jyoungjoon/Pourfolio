@@ -36,7 +36,7 @@ const Header = styled.h1`
 `;
 
 const ProfileCard = styled.div`
-  height: 20rem;
+  height: 30rem;
   width: 75rem;
   background-color: white;
   border-radius: 2rem;
@@ -52,7 +52,7 @@ const StyledWineCard = styled.div`
   letter-spacing: 0;
   width: 75rem;
   min-width: 75rem;
-  height: 20rem;
+  height: 30rem;
   border-radius: 2rem;
   display: flex;
   justify-content: center;
@@ -66,6 +66,36 @@ const StyledWineImage = styled.img`
 const ReviewInput = styled.textarea`
   width: 20rem;
   height: 10rem;
+  font-size: 3rem;
+`;
+
+const WineNameBox = styled.div`
+  font-size: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  min-width: 35rem;
+`;
+
+const SaveButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 13rem;
+  height: 5rem;
+  background-color: #fa9f45;
+  border-radius: 2rem;
+  align-self: center;
+  margin-top: 2.5rem;
+  span {
+    font-family: 'Oswald', sans-serif;
+    color: #00434d;
+    font-size: 3.5rem;
+    font-weight: 500;
+    text-align: center;
+    transform: translateY(-0.65rem);
+  }
 `;
 
 function Cellar() {
@@ -73,6 +103,7 @@ function Cellar() {
   const [myWines, setMyWines] = useState([]);
   const [myReviews, setMyReviews] = useState([]);
   const [reviewText, setReviewText] = useState({});
+  const [userRating, setUserRating] = useState('');
 
   const [saveReview] = useMutation(SAVE_REVIEW);
 
@@ -103,7 +134,7 @@ function Cellar() {
       const reviewsForWines = userReviews.reviews.slice();
       setMyReviews(reviewsForWines);
     }
-  }, [reviewsLoading, userReviews]);
+  }, [reviewsLoading, userReviews, userRating]);
 
   async function handleSaveReview(wineId, userId, rating) {
     const wineReviewText = reviewText[wineId];
@@ -175,43 +206,91 @@ function Cellar() {
             {myWines &&
               myWines.map((wine) => (
                 <StyledWineCard key={wine._id}>
-                  <StyledWineImage src={wine.pictureUrl} />
-                  {wine.name}
-                  {reviewText[wine._id] ? (
-                    <ReviewInput
-                      value={reviewText[wine._id] || ''}
-                      onChange={(e) => {
-                        const newText = e.target.value;
-                        setReviewText((prevTexts) => ({
-                          ...prevTexts,
-                          [wine._id]: newText,
-                        }));
-                      }}
-                    />
-                  ) : (
-                    <ReviewInput
-                      placeholder={
-                        myReviews
-                          ?.filter(
-                            (review) =>
-                              wine._id.toString() === review.wine._id.toString()
-                          )
-                          ?.at(0)?.experience
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex' }}>
+                      <StyledWineImage src={wine.pictureUrl} />
+                      <WineNameBox>
+                        <div>
+                          {`${
+                            wine.name
+                              .slice(0, 25)
+                              .split(' ')
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() +
+                                  word.slice(1).toLowerCase()
+                              )
+                              .join(' ') + '..'
+                          } `}
+                        </div>
+                        <div>{wine.color.toLowerCase()}</div>
+                        <div>{`type: ${
+                          wine.country.toLowerCase().slice(0, 20) + '..'
+                        }`}</div>
+                      </WineNameBox>
+                      <div>
+                        {reviewText[wine._id] ? (
+                          <ReviewInput
+                            type="text"
+                            value={reviewText[wine._id] || ''}
+                            onChange={(e) => {
+                              const newText = e.target.value;
+                              setReviewText((prevTexts) => ({
+                                ...prevTexts,
+                                [wine._id]: newText,
+                              }));
+                            }}
+                          />
+                        ) : (
+                          <ReviewInput
+                            placeholder={
+                              myReviews
+                                ?.filter(
+                                  (review) =>
+                                    wine._id.toString() ===
+                                    review.wine._id.toString()
+                                )
+                                ?.at(0)?.experience
+                            }
+                            value={reviewText[wine._id] || ''}
+                            onChange={(e) => {
+                              const newText = e.target.value;
+                              setReviewText((prevTexts) => ({
+                                ...prevTexts,
+                                [wine._id]: newText,
+                              }));
+                            }}
+                          />
+                        )}
+                        <StarRating
+                          onSetRating={setUserRating}
+                          defaultRating={Number(
+                            myReviews
+                              ?.filter(
+                                (review) =>
+                                  wine._id.toString() ===
+                                  review.wine._id.toString()
+                              )
+                              ?.at(0)?.rating
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <SaveButton
+                      onClick={() =>
+                        handleSaveReview(wine._id, userId, userRating)
                       }
-                      value={reviewText[wine._id] || ''}
-                      onChange={(e) => {
-                        const newText = e.target.value;
-                        setReviewText((prevTexts) => ({
-                          ...prevTexts,
-                          [wine._id]: newText,
-                        }));
-                      }}
-                    />
-                  )}
-                  <StarRating />
-                  <button onClick={() => handleSaveReview(wine._id, userId, 5)}>
-                    Submit
-                  </button>
+                    >
+                      <span>save</span>
+                    </SaveButton>
+                  </div>
                 </StyledWineCard>
               ))}
           </div>
