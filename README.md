@@ -32,7 +32,6 @@ https://github.com/jssoyoung
 
 ## Credits
 
-* Images from 
 * Special thanks to UC Berkeley Coding Boot Camp staff: Samantha (Instructor), Jin Yi (TA), Kenny (TA), Francisco (TA), Kayvon (TA) and Gunjan (TA) for helping us with this project.
 
 ## License
