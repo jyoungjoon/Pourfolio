@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useMutation } from '@apollo/client';
-import { ADD_USER, LOGIN } from '../utils/mutations';
+import { ADD_USER, LOGIN, UPDATE_PASSWORD } from '../utils/mutations';
 import { toast } from 'react-hot-toast';
 import Auth from '../utils/auth';
 
@@ -114,11 +114,15 @@ function Signup() {
     confirmPassword: '',
   });
 
+  const isLoggedIn = Auth.loggedIn()
+  const userId = Auth.getProfile().data._id
+
   console.log(userData);
 
   const [isLogin, setIsLogin] = useState(false);
   const [addUser] = useMutation(ADD_USER);
   const [login] = useMutation(LOGIN);
+  const [updatePassword] = useMutation(UPDATE_PASSWORD);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -151,6 +155,16 @@ function Signup() {
     } catch (error) {
       console.log(error);
       toast('Error', error);
+    }
+  }
+
+  async function handleUpdate(e) {
+    e.preventDefault();
+    try {
+      const { data, error } = await updatePassword({ variables: { userId: userId, currentPassword: userData.password, newPassword: userData.confirmPassword } })
+      console.log(data)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -207,7 +221,8 @@ function Signup() {
             gap: '6rem',
           }}
         >
-          <StyledForm onSubmit={isLogin ? handleLogin : handleSignUp}>
+          <StyledForm onSubmit= {isLoggedIn ? handleUpdate: isLogin ? handleLogin : handleSignUp}>
+            {isLoggedIn? '':
             <Input
               type="email"
               placeholder="email"
@@ -215,7 +230,7 @@ function Signup() {
               onChange={(e) =>
                 setUserData({ ...userData, email: e.target.value })
               }
-            />
+            />}
             <Input
               type="password"
               placeholder="password"
@@ -238,7 +253,9 @@ function Signup() {
                 }
               />
             )}
-            {isLogin ? (
+            {isLoggedIn ? <SubmitButton>
+                <span>update</span>
+              </SubmitButton>:isLogin ? (
               <SubmitButton>
                 <span>login</span>
               </SubmitButton>
