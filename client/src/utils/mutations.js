@@ -49,6 +49,15 @@ export const SAVE_REVIEW = gql`
       userId: $userId
       rating: $rating
       experience: $experience
-    )
+    ) {
+      wine {
+        _id
+      }
+      user {
+        _id
+      }
+      rating
+      experience
+    }
   }
 `;

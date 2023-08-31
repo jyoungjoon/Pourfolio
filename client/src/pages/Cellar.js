@@ -5,6 +5,7 @@ import { GET_CELLAR_BY_USER_ID, GET_USER_REVIEWS } from '../utils/queries';
 import Auth from '../utils/auth';
 import StarRating from '../ui/StarRating';
 import { SAVE_REVIEW } from '../utils/mutations';
+import { useLocation } from 'react-router-dom';
 
 const StyledCellar = styled.div`
   position: relative;
@@ -36,7 +37,7 @@ const Header = styled.h1`
 `;
 
 const ProfileCard = styled.div`
-  height: 30rem;
+  height: 65rem;
   width: 75rem;
   background-color: white;
   border-radius: 2rem;
@@ -105,50 +106,72 @@ function Cellar() {
   const [reviewText, setReviewText] = useState({});
   const [userRating, setUserRating] = useState('');
 
+  const location = useLocation();
+  const isCellarPageActive = location.pathname === '/cellar';
+
   const [saveReview] = useMutation(SAVE_REVIEW);
 
-  const { loading, error, data, refetch } = useQuery(GET_CELLAR_BY_USER_ID, {
+  const {
+    loading: cellarLoading,
+    data: cellarData,
+    refetch: cellarRefetch,
+  } = useQuery(GET_CELLAR_BY_USER_ID, {
     variables: { userId },
   });
 
   const {
     loading: reviewsLoading,
-    error: reviewsError,
-    data: userReviews,
+    data: userReviewsData,
     refetch: reviewsRefetch,
   } = useQuery(GET_USER_REVIEWS, {
     variables: { userId },
   });
 
-  refetch();
-
   useEffect(() => {
-    if (!loading && data?.cellar?.wines?.length !== myWines.length) {
-      const winesInCellar = data.cellar.wines.map((wine) => wine);
-      setMyWines(winesInCellar);
+    if (isCellarPageActive) {
+      cellarRefetch();
+      reviewsRefetch();
     }
-  }, [loading, data]);
+  }, [isCellarPageActive, cellarRefetch, reviewsRefetch, myReviews]);
 
   useEffect(() => {
-    if (!reviewsLoading && userReviews) {
-      const reviewsForWines = userReviews.reviews.slice();
+    if (!reviewsLoading && userReviewsData) {
+      const reviewsForWines = [...userReviewsData.reviews];
       setMyReviews(reviewsForWines);
     }
-  }, [reviewsLoading, userReviews, userRating]);
+  }, [reviewsLoading, userReviewsData, userRating]);
+
+  useEffect(() => {
+    if (!cellarLoading && cellarData) {
+      const winesInCellar = [...cellarData.cellar.wines];
+      setMyWines(winesInCellar);
+    }
+  }, [cellarLoading, cellarData]);
 
   async function handleSaveReview(wineId, userId, rating) {
     const wineReviewText = reviewText[wineId];
+
     const res = await saveReview({
       variables: {
-        wineId: wineId,
-        userId: userId,
+        wineId,
+        userId,
         rating: rating,
         experience: wineReviewText,
       },
     });
-    await reviewsRefetch();
-    const reviewsForWines = userReviews.reviews.slice();
-    setMyReviews(reviewsForWines);
+
+    const updatedReview = res.data.saveReview;
+    const updatedMyReviews = myReviews.map((review) =>
+      review.wine._id === updatedReview.wine._id ? updatedReview : review
+    );
+
+    setMyReviews(updatedMyReviews);
+
+    setReviewText((prevReviewText) => ({
+      ...prevReviewText,
+      [wineId]: '',
+    }));
+    setUserRating('');
   }
 
   return (
@@ -202,7 +225,148 @@ function Cellar() {
               gap: '5rem',
             }}
           >
-            <ProfileCard></ProfileCard>
+            <ProfileCard
+              style={{
+                gridRow: '1 / 3',
+                fontSize: '5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <img
+                src="../images/wineProfile.jpg"
+                alt="profilePic"
+                style={{ width: '20rem', height: '20rem', borderRadius: '70%' }}
+              />
+              <div
+                style={{
+                  marginBottom: '2rem',
+                  fontSize: '5rem',
+                  fontFamily: 'Oswald, sans-serif',
+                  fontWeight: '500',
+                }}
+              >
+                {Auth.getProfile().data.email}
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: '1fr 1fr',
+                  gap: '2rem',
+                  marginBottom: '2rem',
+                  fontSize: '4rem',
+                  fontFamily: 'Oswald, sans-serif',
+                  fontWeight: '400',
+                }}
+              >
+                <div>total # of wines: {myWines.length}</div>
+                <div>reviews: {myReviews.length}</div>
+                <div>
+                  average star rating:&nbsp;
+                  {(
+                    myReviews.reduce(
+                      (acc, cur) => acc + Number(cur.rating),
+                      0
+                    ) / myReviews.length
+                  ).toFixed(2)}
+                </div>
+                <div>
+                  most enjoyed:&nbsp;
+                  {myWines &&
+                    myWines.length > 2 &&
+                    myWines
+                      .reduce((acc, cur) => {
+                        const color = cur.color.toLowerCase();
+                        const existingColor = acc.find(
+                          (item) => item.color === color
+                        );
+
+                        if (existingColor) {
+                          existingColor.count++;
+                        } else {
+                          acc.push({ color, count: 1 });
+                        }
+                        return acc;
+                      }, [])
+                      .sort((a, b) => b.count - a.count)
+                      .slice(0, 1)[0].color}
+                </div>
+              </div>
+              <div
+                style={{
+                  paddingTop: '2rem',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: 'auto',
+                  gap: '1rem',
+
+                  alignItems: 'center',
+                  fontSize: '3rem',
+                  fontFamily: 'Oswald, sans-serif',
+                  fontWeight: '400',
+                }}
+              >
+                <div>
+                  red:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'red'
+                    ).length
+                  }
+                </div>
+                <div>
+                  white:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'white'
+                    ).length
+                  }
+                </div>
+                <div>
+                  port/sherry/dessert:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'fortified'
+                    ).length
+                  }
+                </div>
+                <div>
+                  rose:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'rose'
+                    ).length
+                  }
+                </div>
+                <div>
+                  sparkling:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'sparkling'
+                    ).length
+                  }
+                </div>
+                <div>
+                  rice:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'rice'
+                    ).length
+                  }
+                </div>
+                <div>
+                  mixed:&nbsp;
+                  {
+                    myWines.filter(
+                      (wine) => wine?.color?.toLowerCase() === 'mixed'
+                    ).length
+                  }
+                </div>
+              </div>
+            </ProfileCard>
             {myWines &&
               myWines.map((wine) => (
                 <StyledWineCard key={wine._id}>
@@ -259,7 +423,7 @@ function Cellar() {
                                 )
                                 ?.at(0)?.experience
                             }
-                            value={reviewText[wine._id] || ''}
+                            value={reviewText[wine._id]}
                             onChange={(e) => {
                               const newText = e.target.value;
                               setReviewText((prevTexts) => ({
@@ -285,7 +449,7 @@ function Cellar() {
                     </div>
                     <SaveButton
                       onClick={() =>
-                        handleSaveReview(wine._id, userId, userRating)
+                        handleSaveReview(wine._id, userId, Number(userRating))
                       }
                     >
                       <span>save</span>

@@ -122,20 +122,18 @@ function Search() {
   let wineResults;
 
   if (data) {
-    wineResults = data.wines
-      .map((wine) => ({
+    wineResults = data?.wines
+      ?.map((wine) => ({
         id: wine._id,
-        name: wine.name.toLowerCase(),
+        name: wine.name ? wine.name.toLowerCase() : '',
         pictureUrl: wine.pictureUrl,
         color: wine.color,
         country: wine.country,
       }))
       .filter((wine) => wine.name.startsWith(searchTerm.toLowerCase()))
-      .sort((a, b) => b.name - a.name)
+      .sort((a, b) => b.name.localeCompare(a.name))
       .slice(0, 6);
   }
-
-  // ...
 
   async function handleSave(wineId) {
     try {
@@ -217,13 +215,15 @@ function Search() {
                     <WineNameBox>
                       <div style={{ marginBottom: '1rem' }}>{`${
                         wine.name
-                          .slice(0, 30)
-                          .split(' ')
-                          .map(
-                            (word) =>
-                              word.charAt(0).toUpperCase() + word.slice(1)
-                          )
-                          .join(' ') + '...'
+                          ? wine.name
+                              .slice(0, 30)
+                              .split(' ')
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                              )
+                              .join(' ') + '...'
+                          : ''
                       } `}</div>
                       <div>{wine.color.toLowerCase()}</div>
                       <div>{`origin: ${wine.country.toLowerCase()}`}</div>
