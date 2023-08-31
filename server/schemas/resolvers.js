@@ -122,7 +122,6 @@ const resolvers = {
     },
 
     saveReview: async (parent, { wineId, userId, rating, experience }) => {
-      console.log(wineId);
       try {
         const user = await User.findById(userId).populate('reviews');
 
@@ -131,11 +130,33 @@ const resolvers = {
         );
 
         if (existingReview) {
-          existingReview.rating = rating;
-          existingReview.experience = experience;
+          if (
+            existingReview.rating !== rating &&
+            rating !== '' &&
+            rating !== null &&
+            rating !== undefined &&
+            rating !== 0
+          ) {
+            existingReview.rating = rating;
+          } else {
+            existingReview.rating = existingReview.rating;
+          }
+
+          if (
+            existingReview.experience !== experience &&
+            experience !== '' &&
+            experience !== null &&
+            experience !== undefined
+          ) {
+            existingReview.experience = experience;
+          } else {
+            existingReview.experience = existingReview.experience;
+          }
+
           try {
-            await existingReview.save();
+            const updatedReview = await existingReview.save();
             console.log('Review updated successfully.');
+            return updatedReview;
           } catch (error) {
             console.error('Error updating the review. Try again.');
           }
@@ -156,11 +177,11 @@ const resolvers = {
           user.reviews.push(wineReview);
 
           await user.save();
+          return wineReview;
         }
       } catch (error) {
         console.log(error);
       }
-      return 'Review created!';
     },
   },
 };

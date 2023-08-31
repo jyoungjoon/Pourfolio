@@ -55,7 +55,7 @@ const typeDefs = gql`
       userId: ID!
       rating: Int
       experience: String
-    ): String
+    ): Review
   }
 `;
 
