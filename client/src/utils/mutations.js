@@ -52,3 +52,15 @@ export const SAVE_REVIEW = gql`
     )
   }
 `;
+
+export const UPDATE_PASSWORD = gql`
+mutation updatePassword($userId: ID!
+  $currentPassword: String!
+  $newPassword: String!) {
+    updatePassword(
+      userId: $userId
+      currentPassword: $currentPassword
+      newPassword: $newPassword
+    )
+  }
+  `;

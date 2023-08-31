@@ -74,6 +74,24 @@ const resolvers = {
       return { token, user };
     },
 
+    updatePassword: async (parent, { userId, currentPassword, newPassword }) => {
+
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new AuthenticationError('User not found');
+      }
+
+      const isPasswordValid = await user.isCorrectPassword(currentPassword);
+      if (!isPasswordValid) {
+        throw new AuthenticationError('Incorrect current password');
+      }
+
+      user.password = newPassword
+      await user.save()
+
+      return 'updated'
+    },
+
     saveWine: async (parent, { wineId, userId }, context) => {
       try {
         const wine = await Wine.findById(wineId);
