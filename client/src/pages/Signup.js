@@ -114,10 +114,13 @@ function Signup() {
     confirmPassword: '',
   });
 
-  const isLoggedIn = Auth.loggedIn()
-  const userId = Auth.getProfile().data._id
+  let userId;
 
-  console.log(userData);
+  const isLoggedIn = Auth.loggedIn();
+
+  if (isLoggedIn) {
+    userId = Auth.getProfile().data._id;
+  }
 
   const [isLogin, setIsLogin] = useState(false);
   const [addUser] = useMutation(ADD_USER);
@@ -161,10 +164,16 @@ function Signup() {
   async function handleUpdate(e) {
     e.preventDefault();
     try {
-      const { data, error } = await updatePassword({ variables: { userId: userId, currentPassword: userData.password, newPassword: userData.confirmPassword } })
-      console.log(data)
+      const { data, error } = await updatePassword({
+        variables: {
+          userId: userId,
+          currentPassword: userData.password,
+          newPassword: userData.confirmPassword,
+        },
+      });
+      console.log(data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -221,16 +230,23 @@ function Signup() {
             gap: '6rem',
           }}
         >
-          <StyledForm onSubmit= {isLoggedIn ? handleUpdate: isLogin ? handleLogin : handleSignUp}>
-            {isLoggedIn? '':
-            <Input
-              type="email"
-              placeholder="email"
-              value={userData.email}
-              onChange={(e) =>
-                setUserData({ ...userData, email: e.target.value })
-              }
-            />}
+          <StyledForm
+            onSubmit={
+              isLoggedIn ? handleUpdate : isLogin ? handleLogin : handleSignUp
+            }
+          >
+            {isLoggedIn ? (
+              ''
+            ) : (
+              <Input
+                type="email"
+                placeholder="email"
+                value={userData.email}
+                onChange={(e) =>
+                  setUserData({ ...userData, email: e.target.value })
+                }
+              />
+            )}
             <Input
               type="password"
               placeholder="password"
@@ -253,9 +269,11 @@ function Signup() {
                 }
               />
             )}
-            {isLoggedIn ? <SubmitButton>
+            {isLoggedIn ? (
+              <SubmitButton>
                 <span>update</span>
-              </SubmitButton>:isLogin ? (
+              </SubmitButton>
+            ) : isLogin ? (
               <SubmitButton>
                 <span>login</span>
               </SubmitButton>
