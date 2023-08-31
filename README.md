@@ -5,7 +5,7 @@
 This MERN stack single-page application was created for wine lovers. The user could use this application to keep track of their favorite wines! The user will need to create a log-in. After the user creates a log-in, the user could use the search bar to look up a name of a wine. The user could give that wine a rating from 1-5 or leave a comment in regards to that wine. The user could also save the wine to their "cellar" list to indicate which wines they already tried or is their favorite. The user could also update or even delete their account. This application contains notes on both the client and server side. Google custom search API was used within this application.
 
 Here is the link to the deployed application: 
-Here is an image of the website: 
+Here is an image of the website: ![Portfolio](client/public/images/pourfolio.png)
 Here is the link to the repo: https://github.com/jssoyoung/Pourfolio
 
 ## Installation
