@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/client';
 import { ADD_USER, LOGIN, UPDATE_PASSWORD } from '../utils/mutations';
 import { toast } from 'react-hot-toast';
 import Auth from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 const StyledSignup = styled.div`
   position: relative;
@@ -137,6 +138,8 @@ function Signup() {
   const [login] = useMutation(LOGIN);
   const [updatePassword] = useMutation(UPDATE_PASSWORD);
 
+  const navigate = useNavigate();
+
   async function handleLogin(e) {
     e.preventDefault();
 
@@ -181,9 +184,16 @@ function Signup() {
           newPassword: userData.confirmPassword,
         },
       });
-      console.log(data);
+
+      if (data) {
+        toast('Password updated successfully.');
+        setTimeout(() => {
+          navigate('/');
+        }, '2000');
+      }
     } catch (error) {
       console.log(error);
+      toast('Error updating password.');
     }
   }
 
