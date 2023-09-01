@@ -36,4 +36,4 @@ https://github.com/jssoyoung
 
 ## License
 
-Licensed under MIT License. Please refer to the LICENSE.md in the repo.
+No license information is provided.
