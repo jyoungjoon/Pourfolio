@@ -61,7 +61,6 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <GlobalStyle />
-
         <Routes>
           <Route element={<AppLayout />}>
             <Route index element={<Home />} />
