@@ -20,6 +20,12 @@ export const ADD_USER = gql`
   }
 `;
 
+export const DELETE_USER = gql`
+  mutation deleteUser($userId: ID!) {
+    deleteUser(userId: $userId)
+  }
+`;
+
 export const LOGIN = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -63,13 +69,15 @@ export const SAVE_REVIEW = gql`
 `;
 
 export const UPDATE_PASSWORD = gql`
-mutation updatePassword($userId: ID!
-  $currentPassword: String!
-  $newPassword: String!) {
+  mutation updatePassword(
+    $userId: ID!
+    $currentPassword: String!
+    $newPassword: String!
+  ) {
     updatePassword(
       userId: $userId
       currentPassword: $currentPassword
       newPassword: $newPassword
     )
   }
-  `;
+`;

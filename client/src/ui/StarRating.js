@@ -5,6 +5,7 @@ const containerStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '16px',
+  margin: '1.5rem',
 };
 
 const starContainerStyle = {
@@ -67,7 +68,7 @@ export default function StarRating({
       <p style={textStyle}>
         {messages.length === maxRating
           ? messages[tempRating ? tempRating - 1 : rating - 1]
-          : tempRating || rating || 'Not Rated'}
+          : tempRating || rating || '0'}
       </p>
     </div>
   );
