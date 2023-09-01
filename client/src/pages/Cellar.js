@@ -18,7 +18,7 @@ const Header = styled.h1`
   display: inline-block;
   font-family: 'Oswald', sans-serif;
   font-size: 14rem;
-  transform: rotate(270deg);
+  transform: rotate(270deg) translateY(-3rem);
   text-transform: lowercase;
   color: #fa9f45;
   &:hover,
@@ -38,7 +38,7 @@ const Header = styled.h1`
 
 const ProfileCard = styled.div`
   height: 65rem;
-  width: 75rem;
+  width: 50rem;
   background-color: white;
   border-radius: 2rem;
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
@@ -51,7 +51,7 @@ const StyledWineCard = styled.div`
   font-size: 2.5rem;
   font-family: 'Yellowtail', cursive;
   letter-spacing: 0;
-  width: 75rem;
+  width: auto;
   min-width: 75rem;
   height: 30rem;
   border-radius: 2rem;
@@ -62,15 +62,30 @@ const StyledWineCard = styled.div`
 
 const StyledWineImage = styled.img`
   height: 14rem;
+  max-width: 11rem;
+  margin: 2rem;
+  padding-right: 1rem;
+  border-right: 1px solid #adaaa8;
 `;
 
 const ReviewInput = styled.textarea`
-  width: 20rem;
+  width: 100%;
   height: 10rem;
-  font-size: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: none;
+  transition: border-color 0.3s ease-in-out;
+  overflow: scroll;
 `;
 
 const WineNameBox = styled.div`
+  height: 14rem;
+  margin: 2rem 0;
+  margin-right: -2rem;
+  margin-left: 1rem;
   font-size: 5rem;
   display: flex;
   flex-direction: column;
@@ -88,11 +103,15 @@ const SaveButton = styled.button`
   background-color: #fa9f45;
   border-radius: 2rem;
   align-self: center;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(0.2rem);
+  }
   span {
     font-family: 'Oswald', sans-serif;
     color: #00434d;
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 500;
     text-align: center;
     transform: translateY(-0.65rem);
@@ -181,7 +200,7 @@ function Cellar() {
           borderBottom: '1px solid #BDAFA0',
           borderTop: '1px solid #BDAFA0',
           width: '100%',
-          height: '79.5%',
+          height: '80.5%',
           transform: 'translateY(4%)',
           position: 'fixed',
         }}
@@ -204,7 +223,14 @@ function Cellar() {
           transform: 'translateY(-5%) translateX(-1.5%)',
         }}
       >
-        <div style={{ minWidth: '53.5rem' }}>
+        <div
+          style={{
+            minWidth: '53.5rem',
+            position: 'absolute',
+            left: '-5rem',
+            bottom: '30rem',
+          }}
+        >
           <Header>
             My C<span>e</span>llar
           </Header>
@@ -213,7 +239,9 @@ function Cellar() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            transform: 'translateX(-2.15%)',
+            position: 'absolute',
+            top: '15rem',
+            left: '38.5rem',
           }}
         >
           <div
@@ -236,9 +264,9 @@ function Cellar() {
               }}
             >
               <img
-                src="../images/wineProfile.jpg"
+                src="../images/wineProfile.png"
                 alt="profilePic"
-                style={{ width: '20rem', height: '20rem', borderRadius: '70%' }}
+                style={{ width: '20rem', height: '20rem', borderRadius: '20%' }}
               />
               <div
                 style={{
@@ -256,27 +284,29 @@ function Cellar() {
                   gridTemplateColumns: '1fr 1fr',
                   gridTemplateRows: '1fr 1fr',
                   gap: '2rem',
-                  marginBottom: '2rem',
+                  paddingBottom: '2.5rem',
                   fontSize: '4rem',
                   fontFamily: 'Oswald, sans-serif',
                   fontWeight: '400',
+                  borderBottom: '1px solid #adaaa8',
                 }}
               >
-                <div>total # of wines: {myWines.length}</div>
+                <div>total wines: {myWines.length}</div>
                 <div>reviews: {myReviews.length}</div>
                 <div>
-                  average star rating:&nbsp;
-                  {(
-                    myReviews.reduce(
-                      (acc, cur) => acc + Number(cur.rating),
-                      0
-                    ) / myReviews.length
-                  ).toFixed(2)}
+                  avg rating:&nbsp;
+                  {myReviews.length &&
+                    (
+                      myReviews.reduce(
+                        (acc, cur) => acc + Number(cur.rating),
+                        0
+                      ) / myReviews.length
+                    ).toFixed(2)}
                 </div>
                 <div>
                   most enjoyed:&nbsp;
                   {myWines &&
-                    myWines.length > 2 &&
+                    myWines.length > 1 &&
                     myWines
                       .reduce((acc, cur) => {
                         const color = cur.color.toLowerCase();
@@ -299,16 +329,24 @@ function Cellar() {
                 style={{
                   paddingTop: '2rem',
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr 1fr',
                   gridTemplateRows: 'auto',
                   gap: '1rem',
-
-                  alignItems: 'center',
                   fontSize: '3rem',
                   fontFamily: 'Oswald, sans-serif',
                   fontWeight: '400',
                 }}
               >
+                <div
+                  style={{
+                    gridColumn: '1/4',
+                    alignSelf: 'center',
+                    justifySelf: 'center',
+                    paddingBottom: '0.5rem',
+                  }}
+                >
+                  wines in cellar
+                </div>
                 <div>
                   red:&nbsp;
                   {
@@ -326,7 +364,7 @@ function Cellar() {
                   }
                 </div>
                 <div>
-                  port/sherry/dessert:&nbsp;
+                  fortified:&nbsp;
                   {
                     myWines.filter(
                       (wine) => wine?.color?.toLowerCase() === 'fortified'
@@ -342,7 +380,7 @@ function Cellar() {
                   }
                 </div>
                 <div>
-                  sparkling:&nbsp;
+                  sparkle:&nbsp;
                   {
                     myWines.filter(
                       (wine) => wine?.color?.toLowerCase() === 'sparkling'
@@ -401,50 +439,66 @@ function Cellar() {
                       </WineNameBox>
                       <div>
                         {reviewText[wine._id] ? (
-                          <ReviewInput
-                            type="text"
-                            value={reviewText[wine._id] || ''}
-                            onChange={(e) => {
-                              const newText = e.target.value;
-                              setReviewText((prevTexts) => ({
-                                ...prevTexts,
-                                [wine._id]: newText,
-                              }));
-                            }}
-                          />
+                          <div style={{ marginRight: '3rem' }}>
+                            <StarRating
+                              onSetRating={setUserRating}
+                              defaultRating={Number(
+                                myReviews
+                                  ?.filter(
+                                    (review) =>
+                                      wine._id.toString() ===
+                                      review.wine._id.toString()
+                                  )
+                                  ?.at(0)?.rating
+                              )}
+                            />
+                            <ReviewInput
+                              type="text"
+                              value={reviewText[wine._id] || ''}
+                              onChange={(e) => {
+                                const newText = e.target.value;
+                                setReviewText((prevTexts) => ({
+                                  ...prevTexts,
+                                  [wine._id]: newText,
+                                }));
+                              }}
+                            />
+                          </div>
                         ) : (
-                          <ReviewInput
-                            placeholder={
-                              myReviews
-                                ?.filter(
-                                  (review) =>
-                                    wine._id.toString() ===
-                                    review.wine._id.toString()
-                                )
-                                ?.at(0)?.experience
-                            }
-                            value={reviewText[wine._id]}
-                            onChange={(e) => {
-                              const newText = e.target.value;
-                              setReviewText((prevTexts) => ({
-                                ...prevTexts,
-                                [wine._id]: newText,
-                              }));
-                            }}
-                          />
+                          <div style={{ marginRight: '3rem' }}>
+                            <StarRating
+                              onSetRating={setUserRating}
+                              defaultRating={Number(
+                                myReviews
+                                  ?.filter(
+                                    (review) =>
+                                      wine._id.toString() ===
+                                      review.wine._id.toString()
+                                  )
+                                  ?.at(0)?.rating
+                              )}
+                            />
+                            <ReviewInput
+                              placeholder={
+                                myReviews
+                                  ?.filter(
+                                    (review) =>
+                                      wine._id.toString() ===
+                                      review.wine._id.toString()
+                                  )
+                                  ?.at(0)?.experience
+                              }
+                              value={reviewText[wine._id]}
+                              onChange={(e) => {
+                                const newText = e.target.value;
+                                setReviewText((prevTexts) => ({
+                                  ...prevTexts,
+                                  [wine._id]: newText,
+                                }));
+                              }}
+                            />
+                          </div>
                         )}
-                        <StarRating
-                          onSetRating={setUserRating}
-                          defaultRating={Number(
-                            myReviews
-                              ?.filter(
-                                (review) =>
-                                  wine._id.toString() ===
-                                  review.wine._id.toString()
-                              )
-                              ?.at(0)?.rating
-                          )}
-                        />
                       </div>
                     </div>
                     <SaveButton

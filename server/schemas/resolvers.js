@@ -56,6 +56,11 @@ const resolvers = {
       }
     },
 
+    deleteUser: async (parent, { userId }) => {
+      const user = await User.findByIdAndDelete(userId);
+      return `${user ? 'deleted' : 'failed'}`;
+    },
+
     login: async (parent, { email, password, confirmPassword }) => {
       const user = await User.findOne({ email });
 
@@ -74,8 +79,10 @@ const resolvers = {
       return { token, user };
     },
 
-    updatePassword: async (parent, { userId, currentPassword, newPassword }) => {
-
+    updatePassword: async (
+      parent,
+      { userId, currentPassword, newPassword }
+    ) => {
       const user = await User.findById(userId);
       if (!user) {
         throw new AuthenticationError('User not found');
@@ -86,10 +93,10 @@ const resolvers = {
         throw new AuthenticationError('Incorrect current password');
       }
 
-      user.password = newPassword
-      await user.save()
+      user.password = newPassword;
+      await user.save();
 
-      return 'updated'
+      return 'updated';
     },
 
     saveWine: async (parent, { wineId, userId }, context) => {

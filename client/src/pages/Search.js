@@ -6,6 +6,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_WINE } from '../utils/queries';
 import { SAVE_WINE } from '../utils/mutations';
 import Auth from '../utils/auth';
+import { useHorizontalScroll } from '../utils/helpers';
 
 const StyledSearch = styled.div`
   position: relative;
@@ -23,6 +24,10 @@ const SaveButton = styled.button`
   background-color: #fa9f45;
   border-radius: 2rem;
   align-self: center;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(0.2rem);
+  }
   span {
     font-family: 'Oswald', sans-serif;
     color: #00434d;
@@ -50,7 +55,8 @@ const SearchInput = styled.input`
   padding-left: 3rem;
   font-family: 'Oswald', sans-serif;
   border-radius: 1rem;
-  transform: ${({ hassearchterm }) => hassearchterm && 'translateY(-4rem)'};
+  transform: translateX(21rem)
+    ${({ hassearchterm }) => hassearchterm && 'translateY(-5rem)'};
   transition: all 0.25s ease-in-out;
 `;
 
@@ -58,10 +64,10 @@ const StyledSearchIcon = styled(HiOutlineSearch)`
   position: absolute;
   color: #494949;
   font-size: 5rem;
-  transform: translateX(32.5rem);
+  transform: translateX(52.5rem);
   cursor: pointer;
   transform: ${({ hassearchterm }) =>
-    hassearchterm && 'translateY(-4rem) translateX(32.5rem)'};
+    hassearchterm && 'translateY(-5rem) translateX(52.5rem)'};
   transition: all 0.25s ease-in-out;
 `;
 
@@ -113,6 +119,18 @@ const WineNameBox = styled.div`
   min-width: 35rem;
 `;
 
+const StyledGoBackButton = styled.div`
+  background-image: url('../images/rewind.png');
+  background-size: cover;
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  width: 10rem;
+  height: 10rem;
+  background-color: white;
+  border-radius: 2rem;
+`;
+
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
   const [saveWine] = useMutation(SAVE_WINE);
@@ -132,7 +150,7 @@ function Search() {
       }))
       .filter((wine) => wine.name.startsWith(searchTerm.toLowerCase()))
       .sort((a, b) => b.name.localeCompare(a.name))
-      .slice(0, 6);
+      .slice(0, 8);
   }
 
   async function handleSave(wineId) {
@@ -160,7 +178,7 @@ function Search() {
           borderBottom: '1px solid #BDAFA0',
           borderTop: '1px solid #BDAFA0',
           width: '100%',
-          height: '79.5%',
+          height: '80.5%',
           transform: 'translateY(4%)',
           position: 'fixed',
         }}

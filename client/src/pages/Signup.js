@@ -17,7 +17,7 @@ const Header = styled.h1`
   display: inline-block;
   font-family: 'Oswald', sans-serif;
   font-size: 14rem;
-  transform: rotate(270deg);
+  transform: rotate(270deg) translateY(-2rem);
   text-transform: lowercase;
   color: #fa9f45;
   &:hover,
@@ -39,6 +39,15 @@ const StyledForm = styled.form`
   justify-content: center;
   width: 60%;
   gap: 5.5rem;
+  position: ${({ isloggedin }) => isloggedin && 'absolute'};
+  top: ${({ isloggedin }) => isloggedin && '30rem'};
+  left: ${({ isloggedin }) => isloggedin && '62rem'};
+  transform: ${({ islogin, isloggedin }) =>
+    isloggedin
+      ? ''
+      : islogin
+      ? 'translateY(14.35rem) translateX(13.05rem)'
+      : 'translateY(7.5rem)'};
 `;
 
 const Input = styled.input`
@@ -84,6 +93,7 @@ const CheckboxContainer = styled.label`
   color: #ffffff;
   cursor: pointer;
   user-select: none;
+  align-self: center;
 `;
 
 const Checkbox = styled.input`
@@ -98,7 +108,7 @@ const Checkbox = styled.input`
     background-color: #fa9f45;
     border: 2px solid #fa9f45;
     &::after {
-      content: '\u2714'; /* Unicode character for checkmark */
+      content: '\u2714';
       display: block;
       text-align: center;
       font-size: 2rem;
@@ -208,8 +218,10 @@ function Signup() {
           transform: 'translateY(-5%)',
         }}
       >
-        {isLogin ? (
-          <Header>
+        {isLoggedIn ? (
+          ''
+        ) : isLogin ? (
+          <Header style={{ transform: 'translateX(5rem) rotate(270deg)' }}>
             log<span>in</span>
           </Header>
         ) : (
@@ -231,6 +243,8 @@ function Signup() {
           }}
         >
           <StyledForm
+            isloggedin={isLoggedIn}
+            islogin={isLogin}
             onSubmit={
               isLoggedIn ? handleUpdate : isLogin ? handleLogin : handleSignUp
             }
@@ -249,7 +263,7 @@ function Signup() {
             )}
             <Input
               type="password"
-              placeholder="password"
+              placeholder={isLoggedIn ? 'current password' : 'password'}
               value={userData.password}
               name="password"
               onChange={(e) =>
@@ -261,7 +275,7 @@ function Signup() {
             ) : (
               <Input
                 type="password"
-                placeholder="confirm password"
+                placeholder={isLoggedIn ? 'new password' : 'confirm password'}
                 value={userData.confirmPassword}
                 name="confirmPassword"
                 onChange={(e) =>
@@ -282,15 +296,23 @@ function Signup() {
                 <span>sign up</span>
               </SubmitButton>
             )}
-            <CheckboxContainer htmlFor="isLogin">
-              <Checkbox
-                type={'checkbox'}
-                value={isLogin}
-                onChange={() => setIsLogin(!isLogin)}
-                id="isLogin"
-              />
-              Already have an account? Check ✓ to login!
-            </CheckboxContainer>
+            {isLoggedIn ? (
+              ''
+            ) : (
+              <CheckboxContainer htmlFor="isLogin">
+                <Checkbox
+                  type={'checkbox'}
+                  value={isLogin}
+                  onChange={() => setIsLogin(!isLogin)}
+                  id="isLogin"
+                />
+                Already have an account? Check{' '}
+                <span style={{ color: '#fa9f45', fontSize: '3rem' }}>
+                  &nbsp;✓&nbsp;{' '}
+                </span>{' '}
+                to login!
+              </CheckboxContainer>
+            )}
           </StyledForm>
         </div>
       </div>

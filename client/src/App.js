@@ -14,7 +14,6 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { Toaster } from 'react-hot-toast';
 
-import { StoreProvider } from './utils/GlobalState';
 import Home from './pages/Home';
 import Cellar from './pages/Cellar';
 import Signup from './pages/Signup';
@@ -62,18 +61,17 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <GlobalStyle />
-        <StoreProvider>
-          <Routes>
-            <Route element={<AppLayout />}>
-              <Route index element={<Home />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/cellar" element={<Cellar />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/setting" element={<Setting />} />
-            </Route>
-          </Routes>
-        </StoreProvider>
+
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/cellar" element={<Cellar />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/setting" element={<Setting />} />
+          </Route>
+        </Routes>
       </Router>
       <Toaster
         position="bottom-center"
@@ -84,14 +82,15 @@ function App() {
             duration: 2000,
           },
           error: {
-            duration: 2500,
+            duration: 2000,
           },
           style: {
-            fontSize: '5rem',
+            marginBottom: '2rem',
+            fontSize: '4.5rem',
             maxWidth: '1000px',
             padding: '16px 24px',
             backgroundColor: 'white',
-            borderRadius: '10px',
+            borderRadius: '20px',
             color: '#00434d',
           },
         }}
