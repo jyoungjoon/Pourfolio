@@ -75,7 +75,11 @@ const SubmitButton = styled.button`
   background-color: #fa9f45;
   border-radius: 10px;
   align-self: center;
+  cursor: pointer;
 
+  &:hover {
+    transform: translateY(0.2rem);
+  }
   span {
     font-family: 'Oswald', sans-serif;
     color: #00434d;
